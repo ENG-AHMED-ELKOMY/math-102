@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
@@ -16,6 +15,7 @@
             startup: { typeset: false }
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif; font-size: 15px; line-height: 1.7; transition: background-color 0.25s ease, color 0.25s ease; }
@@ -269,6 +269,205 @@ du = 2x dx
 
 الإجابة الصحيحة هي (ب) xe^x - ∫ e^x dx`
     },
+    "25_q7": {
+        text: "س1.7 - إذا كان f(x)= e^{2x}/(2x)، فإن f'(1)=",
+        options: ["أ) e^2/2", "ب) -e^2/2", "ج) 3e^2/2", "د) 1", "هـ) e^2"],
+        explain: `الشرح التفصيلي:
+
+نستخدم قاعدة القسمة: f'(x)=((e^{2x})'(2x)-e^{2x}(2x)')/(2x)^2
+= (2e^{2x}·2x - 2e^{2x}) / 4x^2
+= e^{2x}(4x-2)/(4x^2)
+
+عند x=1: f'(1)=e^2(4-2)/4 = e^2/2.`
+    },
+    "25_q8": {
+        text: "س1.8 - باستخدام u=x^3، فإن ∫ x^2 cos x^3 dx يساوي:",
+        options: ["أ) ∫ cos u du", "ب) 1/3 ∫ cos u du", "ج) 3 ∫ cos u du", "د) ∫ u^2 du"],
+        explain: `الشرح التفصيلي:
+
+إذا كان u=x^3 فإن du=3x^2 dx، إذن x^2 dx = du/3.
+∫ x^2 cos x^3 dx = 1/3 ∫ cos u du.`
+    },
+    "25_q9": {
+        text: "س1.9 - ∫ x^2 cos x^3 dx =",
+        options: ["أ) 1/3 sin x^3 + c", "ب) sin x^3 + c", "ج) 3 sin x^3 + c", "د) 1/3 x^3 + c"],
+        explain: `الشرح التفصيلي:
+
+من السؤال السابق: 1/3 ∫ cos u du = 1/3 sin u + c.
+إذًا ∫ x^2 cos x^3 dx = 1/3 sin x^3 + c.`
+    },
+    "25_q10": {
+        text: "س1.10 - إذا كانت f(x)=(x^2-x-1)^{2/3}، فإن f'(0)=",
+        options: ["أ) 4/3", "ب) 0", "ج) 1/3", "د) 2/3", "هـ) -2/3"],
+        explain: `الشرح التفصيلي:
+
+f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
+عند x=0: قيمة الأس = -1، و(2x-1) = -1.
+إذًا f'(0)=2/3 (-1)^{-1/3} (-1)=2/3.`
+    },
+    "25_q11": {
+        text: "س1.11 - أوجد lim_{x→-1} (2x^2+3x+1)/(x^2-1)",
+        options: ["أ) 0", "ب) 1/2", "ج) 1/4", "د) -1", "هـ) ∞"],
+        explain: `الشرح التفصيلي:
+
+البسط = (2x+1)(x+1)، المقام = (x+1)(x-1).
+بعد تبسيط الكسر يصبح (2x+1)/(x-1).
+عند x=-1: (-1)/(-2)=1/2.`
+    },
+    "25_q12": {
+        text: "س1.12 - التحليل إلى كسور جزئية لـ 1/((x+2)(x+1)) هو:",
+        options: ["أ) 1/(x+2)-1/(x+1)", "ب) 1/(x+1)-1/(x+2)", "ج) 3/(x+1)+3/(x+2)", "د) 1/(x+1)+3/(x+2)"],
+        explain: `الشرح التفصيلي:
+
+نفرض 1/((x+2)(x+1)) = A/(x+1) + B/(x+2).
+عند x=-1: A=1. عند x=-2: B=-1.
+إذًا التعبير = 1/(x+1) - 1/(x+2).`
+    },
+    "25_q13": {
+        text: "س1.13 - ∫ 1/((x+2)(x+1)) dx =",
+        options: ["أ) ln| (x+1)/(x+2) | + c", "ب) ln|(x+1)(x+2)^3|+c", "ج) 3 ln|(x+1)(x+2)|+c", "د) ln| (x+2)/(x+1) | +c"],
+        explain: `الشرح التفصيلي:
+
+من التحليل إلى كسور جزئية نجد: ∫(1/(x+1)-1/(x+2))dx = ln|x+1|-ln|x+2|+c.
+هذا يساوي ln| (x+1)/(x+2) | + c.`
+    },
+    "25_q14": {
+        text: "س1.14 - اشتق y = e^x + 4x^6",
+        options: ["أ) e^x + 24x^5", "ب) e^x + 6x^5", "ج) e^x + 4x^6", "د) e^x + 4/7 x^7"],
+        explain: `الشرح التفصيلي:
+
+d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
+إذًا y'=e^x+24x^5.`
+    },
+    "25_q15": {
+        text: "س1.15 - مساحة المثلث ذي الرؤوس (-2,0)، (3,0)، (3,5) تمثلها:",
+        options: ["أ) ∫_{-2}^{3}(x+2)dx", "ب) ∫_{-3}^{2}(x+3)dx", "ج) ∫_0^2(x+3)dx", "د) ∫_{-3}^{2}(x+2)dx"],
+        explain: `الشرح التفصيلي:
+
+المستقيم بين (-2,0) و(3,5) هو y=x+2.
+المساحة = ∫_{-2}^{3}(x+2)dx.`
+    },
+    "25_q16": {
+        text: "س1.16 - lim_{x→0} (e^x-1)/x =",
+        options: ["أ) 1/2", "ب) 0", "ج) 1", "د) e", "هـ) -1"],
+        explain: `الشرح التفصيلي:
+
+هذا حد أساسي لدالة e^x ويساوي 1.`
+    },
+    "25_q17": {
+        text: "س1.17 - d/dx ln(1+√x) =",
+        options: ["أ) 1/(√x+x)", "ب) 1/(√x+1)", "ج) 1/(2(√x+x))", "د) 1/(2(1+x))"],
+        explain: `الشرح التفصيلي:
+
+باستخدام قاعدتي السلسلة واللوغاريتم:
+المشتقة = 1/(1+√x) · 1/(2√x)
+= 1/(2√x(1+√x)) = 1/(2(√x+x)).` 
+    },
+    "25_q18": {
+        text: "س1.18 - مجال f(x)=1/x ln(9-x^2) هو:",
+        options: ["أ) (-∞,0)∪(0,∞)", "ب) (0,∞)", "ج) (-3,3)", "د) (-3,0)∪(0,3)", "هـ) (-∞,∞)"],
+        explain: `الشرح التفصيلي:
+
+نحتاج x≠0 و 9-x^2>0.
+إذًا -3<x<3 مع استبعاد 0.
+المجال = (-3,0)∪(0,3).` 
+    },
+    "25_q19": {
+        text: "س1.19 - إذا كان dW/dt=3 كجم/شهر، فإن التغير بعد 5 أشهر هو:",
+        options: ["أ) 5", "ب) 10", "ج) 15", "د) 20", "هـ) 25"],
+        explain: `الشرح التفصيلي:
+
+التغير = ∫_0^5 3 dt = 15 كجم.`
+    },
+    "25_q20": {
+        text: "س1.20 - المساحة بين y=x^2 و y=-x من x=0 إلى x=2 هي:",
+        options: ["أ) 2/3", "ب) 8/3", "ج) 4", "د) 14/3"],
+        explain: `الشرح التفصيلي:
+
+∫_0^2 (x^2-(-x)) dx = ∫_0^2 (x^2+x) dx = [x^3/3 + x^2/2]_0^2 = 8/3 + 2 = 14/3.`
+    },
+    "25_q21": {
+        text: "س1.21 - ∫ x cos x dx =",
+        options: ["أ) x sin x - cos x + c", "ب) x sin x + cos x + c", "ج) -x sin x + cos x + c", "د) x sin x + c"],
+        explain: `الشرح التفصيلي:
+
+باستخدام التكامل بالتجزئة: u=x، dv=cos x dx، v=sin x.
+∫ x cos x dx = x sin x - ∫ sin x dx = x sin x + cos x + c.`
+    },
+    "25_q22": {
+        text: "س1.22 - إذا كان e^{f(x)}=1+x^2، فإن f'(x)=",
+        options: ["أ) 1/(1+x^2)", "ب) 2x/(1+x^2)", "ج) 2x(1+x^2)", "د) 2x e^{1+x^2}", "هـ) ln(1+x^2)"],
+        explain: `الشرح التفصيلي:
+
+نأخذ اللوغاريتم: f(x)=ln(1+x^2).
+ثم f'(x)=2x/(1+x^2).` 
+    },
+    "25_q23": {
+        text: "س1.23 - إذا كانت f(x)=\begin{cases}(√{2x+5}-√{x+7})/(x-2),& x≠2\\k,& x=2\end{cases} و f مستمرة عند x=2، فإن k=",
+        options: ["أ) 0", "ب) 1/9", "ج) 1/3", "د) 1/6", "هـ) 1"],
+        explain: `الشرح التفصيلي:
+
+نحسب النهاية عندما x→2.
+بعد عادة التبسيط نحصل على 1/(√9+√9)=1/6.`
+    },
+    "25_q24": {
+        text: "س1.24 - ln(x-2) < 0 إذا وفقط إذا:",
+        options: ["أ) x<3", "ب) 0<x<3", "ج) x>2", "د) 2<x<3", "هـ) x>3"],
+        explain: `الشرح التفصيلي:
+
+ln(y)<0 عندما 0<y<1.
+مع y=x-2، نحصل على 2<x<3.`
+    },
+    "25_q25": {
+        text: "س1.25 - إذا كان f'(x)=x^2+√x و f(1)=3، فإن f(x)=",
+        options: ["أ) x^3/3 - 1/(2√x) + 25/6", "ب) x^3/3 - 2/3 x^{3/2} + 3", "ج) x^3/3 + 1/(2√x) + 1/2", "د) x^3/3 + 2/3 x^{3/2} + 2", "هـ) x^3/3 + 2/3 x^{3/2}"],
+        explain: `الشرح التفصيلي:
+
+∫(x^2+√x)dx = x^3/3 + 2/3 x^{3/2} + C.
+استخدام f(1)=3 يعطي C=2.`
+    },
+    "25_q26": {
+        text: "س1.26 - إذا كان y=tan u، u=v-1/v، v=ln x، فأوجد dy/dx عند x=e.",
+        options: ["أ) sec^2 e", "ب) 2/e", "ج) 1/e", "د) 1", "هـ) 2"],
+        explain: `الشرح التفصيلي:
+
+dy/dx = sec^2 u · u'.
+ u' = v' + (1/v^2)v' = 1/x (1+1/v^2).
+عند x=e: v=1، u=0 → dy/dx = 1 * 2/e = 2/e.`
+    },
+    "25_q27": {
+        text: "س1.27 - d/dx(sin^{-1}2x) =",
+        options: ["أ) -1/(2√{1-4x^2})", "ب) -2/√{4x^2-1}", "ج) 2/√{1-4x^2}", "د) 2/√{4x^2-1}"],
+        explain: `الشرح التفصيلي:
+
+d/dx sin^{-1}(u)=u'/√{1-u^2}.
+هنا u=2x، u'=2.
+إذًا النتيجة = 2/√{1-4x^2}.`
+    },
+    "25_q28": {
+        text: "س1.28 - حجم الدوران حول المحور x للمنطقة تحت y=x^2 من x=0 إلى x=1 هو:",
+        options: ["أ) π/6", "ب) π/3", "ج) π/5", "د) π/2"],
+        explain: `الشرح التفصيلي:
+
+V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
+    },
+    "25_q29": {
+        text: "س1.29 - إذا كان ∫ f(x) sin x dx = -f(x) cos x + ∫ 9x^2 cos x dx، فإن f(x) يمكن أن تكون:",
+        options: ["أ) 3x^3", "ب) x^3", "ج) -x^3", "د) sin x", "هـ) 3x^2"],
+        explain: `الشرح التفصيلي:
+
+من القاعدة: ∫ f sin x dx = -f cos x + ∫ f' cos x dx.
+إذا كان التكامل الثاني هو ∫ 9x^2 cos x dx، فإن f'=9x^2.
+إذن f=3x^3.`
+    },
+    "25_q30": {
+        text: "س1.30 - معامل x^3 في متسلسلة ماكلوران لـ e^{3x} هو:",
+        options: ["أ) 1/6", "ب) 9/2", "ج) 3/2", "د) 1/3", "هـ) 2/3"],
+        explain: `الشرح التفصيلي:
+
+e^{3x} = Σ (3x)^n/n!.
+مصطلح x^3 هو 27/6 = 9/2.`
+    },
     "25_tf31": {
         text: "س2.31 - الرسوم البيانية لجميع الدوال اللوغاريتمية تمر بالنقطة (0,1)",
         explain: `الشرح التفصيلي:
@@ -292,7 +491,7 @@ du = 2x dx
 العبارة خاطئة ✗`
     },
     "25_tf32": {
-        text: "س2.32 - استخدام التكامل بالتجزئة م�� u = x و dv = e^(x³)dx لحساب ∫ xe^(x³)dx هو اختيار جيد",
+        text: "س2.32 - استخدام التكامل بالتجزئة مع u = x و dv = e^(x³)dx لحساب ∫ xe^(x³)dx هو اختيار جيد",
         explain: `الشرح التفصيلي:
 
 الخطوة 1: تحليل الاختيار المقترح
@@ -485,6 +684,219 @@ du = 2x dx
 = 4 + 7 = 11
 
 الإجابة الصحيحة هي (أ) 11`
+    },
+    "24_q6": {
+        text: "س1.6 - باستخدام التكامل بالتجزئة، ∫ xe^x dx يساوي:",
+        options: ["أ) xe^x + ∫ e^x dx", "ب) xe^x - ∫ e^x dx", "ج) x - ∫ e^x dx", "د) x + ∫ e^x dx"],
+        explain: `الشرح التفصيلي:
+
+نستخدم التكامل بالتجزئة: ∫ u dv = uv - ∫ v du
+
+نختار u=x، dv=e^x dx → v=e^x.
+∫ x e^x dx = x e^x - ∫ e^x dx.`
+    },
+    "24_q7": {
+        text: "س1.7 - إذا كان f(x)=\\frac{e^{2x}}{2x}، فإن f'(1)=",
+        options: ["أ) \\frac{e^2}{2}", "ب) -\\frac{e^2}{2}", "ج) \\frac{3e^2}{2}", "د) 1"],
+        explain: `الشرح التفصيلي:
+
+نستخدم قاعدة القسمة:
+f'(x)=\\frac{(2e^{2x})(2x)-e^{2x}(2)}{(2x)^2}
+=\\frac{e^{2x}(4x-2)}{4x^2}.
+عند x=1: f'(1)=\\frac{e^2}{2}.`
+    },
+    "24_q8": {
+        text: "س1.8 - باستخدام u=x^3، فإن ∫ x^2 cos x^3 dx يساوي:",
+        options: ["أ) ∫ cos u du", "ب) \\frac{1}{3} ∫ cos u du", "ج) ∫ 3 cos u du", "د) ∫ u^2 du"],
+        explain: `الشرح التفصيلي:
+
+u=x^3 → du=3x^2 dx.
+∴ x^2 dx = du/3.
+\\int x^2 cos x^3 dx = 1/3 \\int cos u du.`
+    },
+    "24_q9": {
+        text: "س1.9 - ∫ x^2 cos x^3 dx =",
+        options: ["أ) \\frac{1}{3} sin x^3 + c", "ب) sin x^3 + c", "ج) 3 sin x^3 + c", "د) \\frac{1}{3} x^3 + c"],
+        explain: `الشرح التفصيلي:
+
+من السؤال السابق: 1/3 \\int cos u du = 1/3 sin u + c.
+إذًا \\int x^2 cos x^3 dx = 1/3 sin x^3 + c.`
+    },
+    "24_q10": {
+        text: "س1.10 - إذا كانت f(x)=(x^2-2x-1)^{2/3}، فإن f'(0)=",
+        options: ["أ) \\frac{2}{3}", "ب) 0", "ج) \\frac{4}{3}", "د) -\\frac{4}{3}"],
+        explain: `الشرح التفصيلي:
+
+f'(x)=\\frac{2}{3}(x^2-2x-1)^{-1/3}(2x-2).
+عند x=0: الأس = -1، ومقدار (2x-2)=-2.
+إذًا f'(0)=\\frac{2}{3}(-1)(-2)=\\frac{4}{3}.`
+    },
+    "24_q11": {
+        text: "س1.11 - إذا كان x=t^2+1 و y=3t+1، فإن dy/dx =",
+        options: ["أ) \\frac{3}{2t}", "ب) \\frac{3t}{2}", "ج) 6t", "د) \\frac{2t}{3}"],
+        explain: `الشرح التفصيلي:
+
+dy/dt=3, dx/dt=2t.
+∴ dy/dx = \\frac{3}{2t}.`
+    },
+    "24_q12": {
+        text: "س1.12 - التحليل إلى كسور جزئية لـ \\frac{1}{(x+2)(x+1)} هو:",
+        options: ["أ) (\\frac{3}{x+2}-\\frac{3}{x+1})", "ب) (\\frac{1}{x+1}-\\frac{1}{x+2})", "ج) (\\frac{3}{x+1}+\\frac{3}{x+2})", "د) (\\frac{1}{x+1}+\\frac{3}{x+2})"],
+        explain: `الشرح التفصيلي:
+
+نفرض \\frac{1}{(x+2)(x+1)}=\\frac{A}{x+1}+\\frac{B}{x+2}.
+عند x=-1: A=1.
+عند x=-2: B=-1.
+إذًا التعبير = \\frac{1}{x+1}-\\frac{1}{x+2}.`
+    },
+    "24_q13": {
+        text: "س1.13 - ∫ \\frac{1}{(x+2)(x+1)} dx =",
+        options: ["أ) 3\\ln|\\frac{x+2}{x+1}|+c", "ب) \\ln|(x+1)(x+2)^3|+c", "ج) 3\\ln|(x+1)(x+2)|+c", "د) \\ln|\\frac{x+1}{x+2}|+c"],
+        explain: `الشرح التفصيلي:
+
+∫(1/(x+1)-1/(x+2)) dx = ln|x+1|-ln|x+2|+c.
+= ln|\\frac{x+1}{x+2}|+c.`
+    },
+    "24_q14": {
+        text: "س1.14 - اشتق y = e^x + 4x^6",
+        options: ["أ) e^x + 24x^5", "ب) e^x + 6x^5", "ج) e^x + 4x^6", "د) e^x + \\frac{4}{7}x^7"],
+        explain: `الشرح التفصيلي:
+
+d/dx(e^x)=e^x.
+d/dx(4x^6)=24x^5.
+∴ y' = e^x + 24x^5.`
+    },
+    "24_q15": {
+        text: "س1.15 - مساحة المثلث ذي الرؤوس (-3,0)، (2,0)، (2,5) هي:",
+        options: ["أ) ∫_{-3}^{0}(x+2)dx", "ب) ∫_{-3}^{2}(x+3)dx", "ج) ∫_0^2(x+3)dz", "د) ∫_{-3}^{2}(x+2)dx"],
+        explain: `الشرح التفصيلي:
+
+خط المستقيم بين (-3,0) و(2,5) هو y=x+3.
+المساحة = ∫_{-3}^{2}(x+3)dx.`
+    },
+    "24_q16": {
+        text: "س1.16 - lim_{x\\to 0} \\frac{e^x-1}{2x} =",
+        options: ["أ) \\frac{1}{2}", "ب) 0", "ج) 1", "د) e"],
+        explain: `الشرح التفصيلي:
+
+lim (e^x-1)/x = 1.
+إذاً lim (e^x-1)/(2x) = 1/2.`
+    },
+    "24_q17": {
+        text: "س1.17 - طول المنحنى x=cos^3 t، y=sin^3 t، 0≤t≤π/2 هو:",
+        options: ["أ) ∫_0^{π/2} √{3cos^2 t + 3 sin^2 t} dt", "ب) ∫_0^{π/2} √{-3cos^2 t sin t + 3 sin^2 t cos t} dt", "ج) ∫_0^{π/2} √{9 cos^{-t} t + 9 sin^4 t} dt", "د) ∫_0^{π/2} √{9 cos^4 t sin^2 t + 9 sin^4 t cos^2 t} dt"],
+        explain: `الشرح التفصيلي:
+
+dx/dt=-3cos^2 t sin t.
+dy/dt=3sin^2 t cos t.
+الطول = ∫√((dx/dt)^2+(dy/dt)^2) dt = ∫√(9cos^4 t sin^2 t + 9sin^4 t cos^2 t) dt.`
+    },
+    "24_q18": {
+        text: "س1.18 - طول المنحنى في السؤال السابق يساوي:",
+        options: ["أ) \\frac{√3}{2}π", "ب) 6", "ج) \\frac{3}{2}", "د) -6"],
+        explain: `الشرح التفصيلي:
+
+الطول = ∫_0^{π/2} 3 sin t cos t dt = 3/2 [sin^2 t]_0^{π/2} = 3/2.`
+    },
+    "24_q19": {
+        text: "س1.19 - إذا كان x=t^3-t^2-1 و y=t^4+2t^2-8t، فإن الميل العمودي يحدث عند:",
+        options: ["أ) 0 و 1 و 2/3", "ب) 1 فقط", "ج) 0 و 2/3 فقط", "د) لا قيمة"],
+        explain: `الشرح التفصيلي:
+
+الميل العمودي عندما dx/dt = 0.
+dx/dt = 3t^2 - 2t = t(3t-2).
+الحلول: t=0 أو t=2/3.`
+    },
+    "24_q20": {
+        text: "س1.20 - المساحة بين y=x^2 و y=-x من x=0 إلى x=2 هي:",
+        options: ["أ) 2/3", "ب) 8/3", "ج) 4", "د) 14/3"],
+        explain: `الشرح التفصيلي:
+
+∫_0^2 (x^2 - (-x)) dx = ∫_0^2 (x^2+x) dx = 14/3.`
+    },
+    "24_q21": {
+        text: "س1.21 - ∫ x cos x dx =",
+        options: ["أ) x sin x - cos x + c", "ب) x sin x + cos x + c", "ج) -x sin x + cos x + c", "د) x sin x + c"],
+        explain: `الشرح التفصيلي:
+
+باستخدام التكامل بالتجزئة: u=x، v=sin x.
+∴ ∫ x cos x dx = x sin x + cos x + c.`
+    },
+    "24_q22": {
+        text: "س1.22 - إذا كان e^{f(x)}=1+x^2، فإن f'(x)=",
+        options: ["أ) 1/(1+x^2)", "ب) 2x/(1+x^2)", "ج) 2x(1+x^2)", "د) 2x e^{1+x^2}"],
+        explain: `الشرح التفصيلي:
+
+f(x)=ln(1+x^2).
+∴ f'(x)=2x/(1+x^2).`
+    },
+    "24_q23": {
+        text: "س1.23 - إذا كان f(x)=\\frac{√{2x+5}-√{x+7}}{x-2} و f مستمرة عند x=2، فإن k =",
+        options: ["أ) 0", "ب) 1/6", "ج) 1/3", "د) 1"],
+        explain: `الشرح التفصيلي:
+
+نحسب النهاية بعد التربيع.
+الناتج = 1/(√9+√9) = 1/6.`
+    },
+    "24_q24": {
+        text: "س1.24 - ln(x-2) < 0 إذا وفقط إذا:",
+        options: ["أ) x<3", "ب) 0<x<3", "ج) x>2", "د) 2<x<3"],
+        explain: `الشرح التفصيلي:
+
+ln(y)<0 عندما 0<y<1.
+مع y=x-2 → 2<x<3.`
+    },
+    "24_q25": {
+        text: "س1.25 - إذا كان 3x^2+2xy+y^2=2، فإن dy/dx عند x=1 هو:",
+        options: ["أ) -2", "ب) 0", "ج) 2", "د) غير معرف"],
+        explain: `الشرح التفصيلي:
+
+نشتق ضمنياً:
+6x + 2y + 2x y' + 2y y' = 0.
+نجمع y': y'(2x+2y) = -6x-2y.
+عند (1,-1) يكون المقام = 0، إذًا y' غير معرف.`
+    },
+    "24_q26": {
+        text: "س1.26 - إذا كان y=\\tan u، u=v-1/v، v=ln x، فأوجد dy/dx عند x=e.",
+        options: ["أ) sec^2 e", "ب) 1/e", "ج) 2/e", "د) 1"],
+        explain: `الشرح التفصيلي:
+
+dy/dx = sec^2 u · u'.
+ u' = v' + (1/v^2)v' = 1/x(1+1/v^2).
+عند x=e: v=1، u=0 → 2/e.`
+    },
+    "24_q27": {
+        text: "س1.27 - d/dx(sin^{-1}2x) =",
+        options: ["أ) -1/(2√{1-4x^2})", "ب) -2/√{4x^2-1}", "ج) 2/√{1-4x^2}", "د) 2/√{4x^2-1}"],
+        explain: `الشرح التفصيلي:
+
+d/dx sin^{-1}(u)=u'/√{1-u^2}.
+مع u=2x و u'=2.
+∴ 2/√{1-4x^2}.`
+    },
+    "24_q28": {
+        text: "س1.28 - حجم الدوران حول المحور x للمنطقة تحت y=x^2 من x=0 إلى x=1 هو:",
+        options: ["أ) π/6", "ب) π/3", "ج) π/5", "د) π/2"],
+        explain: `الشرح التفصيلي:
+
+V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
+    },
+    "24_q29": {
+        text: "س1.29 - إذا كان ∫ f(x) sin x dx = -f(x) cos x + ∫ 9x^2 cos x dx، فإن f(x)=",
+        options: ["أ) 3x^3", "ب) x^3", "ج) -x^3", "د) sin x"],
+        explain: `الشرح التفصيلي:
+
+من IBP: ∫ f sin x dx = -f cos x + ∫ f' cos x dx.
+إذا كان التكامل الثاني = ∫ 9x^2 cos x dx، فإن f'=9x^2.
+إذن f=3x^3.`
+    },
+    "24_q30": {
+        text: "س1.30 - معامل x^3 في متسلسلة ماكلوران لـ e^{3x} هو:",
+        options: ["أ) 1/6", "ب) 1/3", "ج) 3/2", "د) 9/2"],
+        explain: `الشرح التفصيلي:
+
+e^{3x} = Σ (3x)^n/n!.
+مصطلح x^3 هو 27/6 = 9/2.`
     },
     "24_tf31": {
         text: "س2.31 - الرسوم البيانية لجميع الدوال اللوغاريتمية تمر بالنقطة (0,1)",
@@ -1943,6 +2355,36 @@ function renderSolutionHTML(raw) {
     ).join('');
 }
 
+function escapeHTML(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function isMathSegment(segment) {
+    return /[∫√∞πθλμσΔ∂≤≥≠±∓×÷→≈≡]|\\?sin|\\?cos|\\?tan|\\?log|\\?ln|\\?lim|\^|_|\bexp\b|\bsec\b|\bcsc\b|\bcot\b|\bsin\b|\bcos\b|\btan\b/.test(segment);
+}
+
+function renderTranslationLine(line) {
+    const parts = line.split(/([\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]+)/);
+    return parts.map(part => {
+        if (!part) return '';
+        if (isMathSegment(part)) {
+            return `\\(${lineToTeX(part)}\\)`;
+        }
+        return escapeHTML(part);
+    }).join('');
+}
+
+function renderTranslationText(raw) {
+    return raw.split('\n').map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '<div class="h-1"></div>';
+        return `<div class="text-sm leading-relaxed">${renderTranslationLine(trimmed)}</div>`;
+    }).join('');
+}
+
 // ===================== TRANSLATION FUNCTION =====================
 function toggleTranslation(qId) {
     const key = `${activeRoomKey}_${qId}`;
@@ -1962,6 +2404,9 @@ function toggleTranslation(qId) {
         // Show translation
         translatedQuestions[key] = true;
         const trans = translations[qId];
+        if (!trans) {
+            console.warn('Missing translation for', qId, 'active room', activeRoomKey);
+        }
         
         if (trans) {
             // Find the question object to get LaTeX options
@@ -1974,22 +2419,16 @@ function toggleTranslation(qId) {
                         <span class="text-lg">🇸🇦</span>
                         <span class="text-sm font-bold text-blue-400">الترجمة العربية</span>
                     </div>
-                    <p class="text-sm font-semibold text-main mb-3">${trans.text}</p>
+                    <p class="text-sm font-semibold text-main mb-3">${renderTranslationLine(trans.text)}</p>
             `;
             
-            if (trans.options && qObj && qObj.options) {
-                // Use LaTeX from question options, Arabic letter label from trans.options
-                const arLabels = trans.options.map(o => o.split(')')[0].trim()); // ["أ", "ب", "ج", ...]
-                translationHTML += `<div class="space-y-2 mb-3">`;
-                qObj.options.forEach((latexOpt, idx) => {
-                    const arLabel = arLabels[idx] || String.fromCharCode(1571 + idx);
-                    translationHTML += `<div class="option-wrapper flex items-center gap-3 border p-3 rounded-xl text-sm text-muted pr-4">${arLabel}) ${latexOpt}</div>`;
-                });
-                translationHTML += `</div>`;
-            } else if (trans.options) {
+            if (trans.options) {
                 translationHTML += `<div class="space-y-2 mb-3">`;
                 trans.options.forEach(opt => {
-                    translationHTML += `<div class="option-wrapper flex items-center gap-3 border p-3 rounded-xl text-sm text-muted pr-4">${opt}</div>`;
+                    const match = opt.match(/^([^\)]+\))\s*(.*)$/);
+                    const label = match ? match[1].trim() : '';
+                    const content = match ? match[2].trim() : opt;
+                    translationHTML += `<div class="option-wrapper flex items-center gap-3 border p-3 rounded-xl text-sm text-muted pr-4"><span class="font-semibold">${escapeHTML(label)}</span> ${renderTranslationLine(content)}</div>`;
                 });
                 translationHTML += `</div>`;
             }
@@ -1998,7 +2437,7 @@ function toggleTranslation(qId) {
                 translationHTML += `
                     <div class="detailed-explain rounded-lg p-3 mt-3">
                         <p class="text-xs font-bold text-emerald-400 mb-2">الشرح التفصيلي:</p>
-                        <div class="text-sm text-slate-200 whitespace-pre-line leading-relaxed">${trans.explain}</div>
+                        <div class="text-sm text-slate-200 leading-relaxed">${renderTranslationText(trans.explain)}</div>
                     </div>
                 `;
             }
