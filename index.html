@@ -45,6 +45,8 @@
         body.light-theme .tab-idle      { background-color: #f1f5f9; border-color: #cbd5e1; color: #475569; }
         body.light-theme .tab-badge-idle{ background-color: #e2e8f0; border-color: #94a3b8; color: #475569; }
         body.light-theme #theme-btn     { background-color: #f1f5f9; border-color: #cbd5e1; color: #4f46e5; }
+        body.light-theme .tab-active    { background-color: #ede9fe; border-color: #a5b4fc; color: #4338ca; }
+        body.light-theme .badge-active  { background-color: #ede9fe; border-color: #a5b4fc; color: #4338ca; }
         body.light-theme #overall-score-container { background-color: #f0fdf4; border-color: #bbf7d0; }
         body.light-theme .btn-reset     { border-color: #cbd5e1; color: #475569; }
         body.light-theme .btn-reset:hover { background-color: #f1f5f9; }
@@ -55,9 +57,35 @@
         .sol-content { display: flex; flex-direction: column; gap: 6px; line-height: 1.7; }
         .sol-line { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: 1px 0; }
         .sol-line mjx-container { margin: 0 !important; }
+        /* Force MathJax inline inside question text */
+        p.text-main mjx-container,
+        p.text-main mjx-container[display="true"] {
+            display: inline !important;
+            margin: 0 2px !important;
+            vertical-align: middle !important;
+        }
+        /* Force inline math in Arabic translation question text */
+        .q-text-wrap mjx-container,
+        .q-text-wrap mjx-container[display="true"] {
+            display: inline !important;
+            margin: 0 2px !important;
+            vertical-align: middle !important;
+        }
+        .q-text-wrap {
+            display: inline;
+            line-height: 1.9;
+        }
         .solution-box { background-color: rgba(2,6,23,0.3); border-color: #334155; transition: background-color 0.25s ease, border-color 0.25s ease; }
         .subjective-textarea { background-color: rgba(2,6,23,0.2); border-color: rgba(51,65,85,0.8); color: #34d399; transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
         body.light-theme .solution-box { background-color: #f8fafc; border-color: #e2e8f0; }
+        body.light-theme .sol-content { color: #1e293b; }
+        body.light-theme .sol-content mjx-container { color: #1e293b; }
+        body.light-theme .explain-box .sol-content,
+        body.light-theme .solution-box .sol-content,
+        body.light-theme .detailed-explain .sol-content { color: #1e293b; }
+        body.light-theme .translated-content .text-slate-200,
+        body.light-theme .detailed-explain .text-slate-200,
+        body.light-theme .sol-content.text-slate-200 { color: #1e293b !important; }
         body.light-theme .subjective-textarea { background-color: #ffffff; border-color: #e2e8f0; color: #0f172a; }
         body.light-theme .subjective-textarea::placeholder { color: #94a3b8; }
         .badge-pass   { background-color: rgba(6,78,59,0.4);  color: #34d399; border-color: rgba(6,78,59,0.3); }
@@ -94,17 +122,18 @@
     </style>
 </head>
 <body id="app-body" class="min-h-screen flex flex-col selection:bg-indigo-500/30">
+
     <header class="nav-bg border-b p-4 flex flex-col gap-3 shadow-sm">
         <div class="flex items-center justify-between w-full">
             <div class="flex items-center gap-2.5">
                 <div class="bg-gradient-to-tr from-indigo-600 to-violet-600 p-2 rounded-xl text-white font-bold text-xs shadow-md">∫</div>
                 <div>
-                    <h1 class="text-base font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent tracking-tight">MATH102 Portal</h1>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent tracking-tight">MATH102 Portal</h1>
                     <p class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Minia University - Faculty of Science</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="toggleThemeEngineMode()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900/40 text-xs font-bold cursor-pointer transition-colors text-main" id="theme-btn">Light</button>
+                <button type="button" onclick="toggleThemeEngineMode()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900/40 text-xs font-bold cursor-pointer transition-colors text-main" id="theme-btn">☀️ Light</button>
                 <div id="overall-score-container" class="bg-slate-900/40 border border-slate-800/60 px-2.5 py-1.5 rounded-xl text-[11px] font-bold text-emerald-500"><span id="overall-score-txt">0% Passed</span></div>
             </div>
         </div>
@@ -142,7 +171,7 @@ const translations = {
     "25_q1": {
         text: "س1.1 - ∫ 2e^(3x) dx =",
         options: ["أ) 2e^x + c", "ب) 2ln(x) + c", "ج) (2/3)e^(3x) + c", "د) 2e^(3x) + c", "هـ) 6e^(3x) + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نريد حساب التكامل ∫ 2e^(3x) dx
 
@@ -162,7 +191,7 @@ d/dx[(2/3)e^(3x)] = (2/3) × 3 × e^(3x) = 2e^(3x) ✓
     "25_q2": {
         text: "س1.2 - اشتق الدالة (x² + 2)³",
         options: ["أ) (x+2)^(1/2)", "ب) 2x(x²+2)²", "ج) 6x²(x³+2)²", "د) 3x²(x³+2)", "هـ) 6x(x²+2)²"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة السلسلة (Chain Rule)
 
@@ -184,7 +213,7 @@ dy/dx = 3(x² + 2)² × 2x = 6x(x² + 2)²
     "25_q3": {
         text: "س1.3 - باستخدام التعويض u = cos(x)، التكامل ∫ cos³(x)sin(x) dx يساوي:",
         options: ["أ) ∫ u³ du", "ب) ∫ 3u² du", "ج) (1/3)∫ u³ du", "د) ∫ u⁴ du", "هـ) -∫ u³ du"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم طريقة التعويض (Substitution Method)
 
@@ -208,7 +237,7 @@ du = -sin(x) dx
     "25_q4": {
         text: "س1.4 - ∫₀¹ xe^(x²) dx =",
         options: ["أ) (1/2)(e+1)", "ب) e-1", "ج) (1/2)(e-1)", "د) e²/2", "هـ) (1/2)e(e³-1)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذا تكامل محدد، نستخدم طريقة التعويض
 
@@ -235,7 +264,7 @@ du = 2x dx
     "25_q5": {
         text: "س1.5 - إذا كان ∫₁¹⁰ f(x)dx = 4 و ∫₁₀³ f(x)dx = 7، فإن ∫₁³ f(x)dx =",
         options: ["أ) 10", "ب) -3", "ج) 3", "د) 11", "هـ) 12"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم خاصية جمع التكاملات المحددة
 
@@ -252,7 +281,7 @@ du = 2x dx
     "25_q6": {
         text: "س1.6 - باستخدام التكامل بالتجزئة، ∫ xe^x dx يساوي:",
         options: ["أ) xe^x + ∫ e^x dx", "ب) xe^x - ∫ e^x dx", "ج) x - ∫ e^x dx", "د) x + ∫ e^x dx", "هـ) xe^x"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم التكامل بالتجزئة (Integration by Parts)
 
@@ -272,7 +301,7 @@ du = 2x dx
     "25_q7": {
         text: "س1.7 - إذا كان f(x)= e^{2x}/(2x)، فإن f'(1)=",
         options: ["أ) e^2/2", "ب) -e^2/2", "ج) 3e^2/2", "د) 1", "هـ) e^2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة القسمة: f'(x)=((e^{2x})'(2x)-e^{2x}(2x)')/(2x)^2
 = (2e^{2x}·2x - 2e^{2x}) / 4x^2
@@ -283,7 +312,7 @@ du = 2x dx
     "25_q8": {
         text: "س1.8 - باستخدام u=x^3، فإن ∫ x^2 cos x^3 dx يساوي:",
         options: ["أ) ∫ cos u du", "ب) 1/3 ∫ cos u du", "ج) 3 ∫ cos u du", "د) ∫ u^2 du"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 إذا كان u=x^3 فإن du=3x^2 dx، إذن x^2 dx = du/3.
 ∫ x^2 cos x^3 dx = 1/3 ∫ cos u du.`
@@ -291,7 +320,7 @@ du = 2x dx
     "25_q9": {
         text: "س1.9 - ∫ x^2 cos x^3 dx =",
         options: ["أ) 1/3 sin x^3 + c", "ب) sin x^3 + c", "ج) 3 sin x^3 + c", "د) 1/3 x^3 + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 من السؤال السابق: 1/3 ∫ cos u du = 1/3 sin u + c.
 إذًا ∫ x^2 cos x^3 dx = 1/3 sin x^3 + c.`
@@ -299,7 +328,7 @@ du = 2x dx
     "25_q10": {
         text: "س1.10 - إذا كانت f(x)=(x^2-x-1)^{2/3}، فإن f'(0)=",
         options: ["أ) 4/3", "ب) 0", "ج) 1/3", "د) 2/3", "هـ) -2/3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
 عند x=0: قيمة الأس = -1، و(2x-1) = -1.
@@ -308,7 +337,7 @@ f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
     "25_q11": {
         text: "س1.11 - أوجد lim_{x→-1} (2x^2+3x+1)/(x^2-1)",
         options: ["أ) 0", "ب) 1/2", "ج) 1/4", "د) -1", "هـ) ∞"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 البسط = (2x+1)(x+1)، المقام = (x+1)(x-1).
 بعد تبسيط الكسر يصبح (2x+1)/(x-1).
@@ -317,7 +346,7 @@ f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
     "25_q12": {
         text: "س1.12 - التحليل إلى كسور جزئية لـ 1/((x+2)(x+1)) هو:",
         options: ["أ) 1/(x+2)-1/(x+1)", "ب) 1/(x+1)-1/(x+2)", "ج) 3/(x+1)+3/(x+2)", "د) 1/(x+1)+3/(x+2)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نفرض 1/((x+2)(x+1)) = A/(x+1) + B/(x+2).
 عند x=-1: A=1. عند x=-2: B=-1.
@@ -326,7 +355,7 @@ f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
     "25_q13": {
         text: "س1.13 - ∫ 1/((x+2)(x+1)) dx =",
         options: ["أ) ln| (x+1)/(x+2) | + c", "ب) ln|(x+1)(x+2)^3|+c", "ج) 3 ln|(x+1)(x+2)|+c", "د) ln| (x+2)/(x+1) | +c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 من التحليل إلى كسور جزئية نجد: ∫(1/(x+1)-1/(x+2))dx = ln|x+1|-ln|x+2|+c.
 هذا يساوي ln| (x+1)/(x+2) | + c.`
@@ -334,7 +363,7 @@ f'(x) = 2/3 (x^2-x-1)^{-1/3} (2x-1).
     "25_q14": {
         text: "س1.14 - اشتق y = e^x + 4x^6",
         options: ["أ) e^x + 24x^5", "ب) e^x + 6x^5", "ج) e^x + 4x^6", "د) e^x + 4/7 x^7"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
 إذًا y'=e^x+24x^5.`
@@ -342,7 +371,7 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q15": {
         text: "س1.15 - مساحة المثلث ذي الرؤوس (-2,0)، (3,0)، (3,5) تمثلها:",
         options: ["أ) ∫_{-2}^{3}(x+2)dx", "ب) ∫_{-3}^{2}(x+3)dx", "ج) ∫_0^2(x+3)dx", "د) ∫_{-3}^{2}(x+2)dx"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 المستقيم بين (-2,0) و(3,5) هو y=x+2.
 المساحة = ∫_{-2}^{3}(x+2)dx.`
@@ -350,14 +379,14 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q16": {
         text: "س1.16 - lim_{x→0} (e^x-1)/x =",
         options: ["أ) 1/2", "ب) 0", "ج) 1", "د) e", "هـ) -1"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذا حد أساسي لدالة e^x ويساوي 1.`
     },
     "25_q17": {
         text: "س1.17 - d/dx ln(1+√x) =",
         options: ["أ) 1/(√x+x)", "ب) 1/(√x+1)", "ج) 1/(2(√x+x))", "د) 1/(2(1+x))"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 باستخدام قاعدتي السلسلة واللوغاريتم:
 المشتقة = 1/(1+√x) · 1/(2√x)
@@ -366,7 +395,7 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q18": {
         text: "س1.18 - مجال f(x)=1/x ln(9-x^2) هو:",
         options: ["أ) (-∞,0)∪(0,∞)", "ب) (0,∞)", "ج) (-3,3)", "د) (-3,0)∪(0,3)", "هـ) (-∞,∞)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نحتاج x≠0 و 9-x^2>0.
 إذًا -3<x<3 مع استبعاد 0.
@@ -375,21 +404,21 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q19": {
         text: "س1.19 - إذا كان dW/dt=3 كجم/شهر، فإن التغير بعد 5 أشهر هو:",
         options: ["أ) 5", "ب) 10", "ج) 15", "د) 20", "هـ) 25"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 التغير = ∫_0^5 3 dt = 15 كجم.`
     },
     "25_q20": {
         text: "س1.20 - المساحة بين y=x^2 و y=-x من x=0 إلى x=2 هي:",
         options: ["أ) 2/3", "ب) 8/3", "ج) 4", "د) 14/3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ∫_0^2 (x^2-(-x)) dx = ∫_0^2 (x^2+x) dx = [x^3/3 + x^2/2]_0^2 = 8/3 + 2 = 14/3.`
     },
     "25_q21": {
         text: "س1.21 - ∫ x cos x dx =",
         options: ["أ) x sin x - cos x + c", "ب) x sin x + cos x + c", "ج) -x sin x + cos x + c", "د) x sin x + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 باستخدام التكامل بالتجزئة: u=x، dv=cos x dx، v=sin x.
 ∫ x cos x dx = x sin x - ∫ sin x dx = x sin x + cos x + c.`
@@ -397,7 +426,7 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q22": {
         text: "س1.22 - إذا كان e^{f(x)}=1+x^2، فإن f'(x)=",
         options: ["أ) 1/(1+x^2)", "ب) 2x/(1+x^2)", "ج) 2x(1+x^2)", "د) 2x e^{1+x^2}", "هـ) ln(1+x^2)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نأخذ اللوغاريتم: f(x)=ln(1+x^2).
 ثم f'(x)=2x/(1+x^2).` 
@@ -405,7 +434,7 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q23": {
         text: "س1.23 - إذا كانت f(x)=\begin{cases}(√{2x+5}-√{x+7})/(x-2),& x≠2\\k,& x=2\end{cases} و f مستمرة عند x=2، فإن k=",
         options: ["أ) 0", "ب) 1/9", "ج) 1/3", "د) 1/6", "هـ) 1"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نحسب النهاية عندما x→2.
 بعد عادة التبسيط نحصل على 1/(√9+√9)=1/6.`
@@ -413,7 +442,7 @@ d/dx(e^x)=e^x، d/dx(4x^6)=24x^5.
     "25_q24": {
         text: "س1.24 - ln(x-2) < 0 إذا وفقط إذا:",
         options: ["أ) x<3", "ب) 0<x<3", "ج) x>2", "د) 2<x<3", "هـ) x>3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ln(y)<0 عندما 0<y<1.
 مع y=x-2، نحصل على 2<x<3.`
@@ -421,7 +450,7 @@ ln(y)<0 عندما 0<y<1.
     "25_q25": {
         text: "س1.25 - إذا كان f'(x)=x^2+√x و f(1)=3، فإن f(x)=",
         options: ["أ) x^3/3 - 1/(2√x) + 25/6", "ب) x^3/3 - 2/3 x^{3/2} + 3", "ج) x^3/3 + 1/(2√x) + 1/2", "د) x^3/3 + 2/3 x^{3/2} + 2", "هـ) x^3/3 + 2/3 x^{3/2}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ∫(x^2+√x)dx = x^3/3 + 2/3 x^{3/2} + C.
 استخدام f(1)=3 يعطي C=2.`
@@ -429,7 +458,7 @@ ln(y)<0 عندما 0<y<1.
     "25_q26": {
         text: "س1.26 - إذا كان y=tan u، u=v-1/v، v=ln x، فأوجد dy/dx عند x=e.",
         options: ["أ) sec^2 e", "ب) 2/e", "ج) 1/e", "د) 1", "هـ) 2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 dy/dx = sec^2 u · u'.
  u' = v' + (1/v^2)v' = 1/x (1+1/v^2).
@@ -438,7 +467,7 @@ dy/dx = sec^2 u · u'.
     "25_q27": {
         text: "س1.27 - d/dx(sin^{-1}2x) =",
         options: ["أ) -1/(2√{1-4x^2})", "ب) -2/√{4x^2-1}", "ج) 2/√{1-4x^2}", "د) 2/√{4x^2-1}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 d/dx sin^{-1}(u)=u'/√{1-u^2}.
 هنا u=2x، u'=2.
@@ -447,14 +476,14 @@ d/dx sin^{-1}(u)=u'/√{1-u^2}.
     "25_q28": {
         text: "س1.28 - حجم الدوران حول المحور x للمنطقة تحت y=x^2 من x=0 إلى x=1 هو:",
         options: ["أ) π/6", "ب) π/3", "ج) π/5", "د) π/2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
     },
     "25_q29": {
         text: "س1.29 - إذا كان ∫ f(x) sin x dx = -f(x) cos x + ∫ 9x^2 cos x dx، فإن f(x) يمكن أن تكون:",
         options: ["أ) 3x^3", "ب) x^3", "ج) -x^3", "د) sin x", "هـ) 3x^2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 من القاعدة: ∫ f sin x dx = -f cos x + ∫ f' cos x dx.
 إذا كان التكامل الثاني هو ∫ 9x^2 cos x dx، فإن f'=9x^2.
@@ -463,14 +492,14 @@ V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
     "25_q30": {
         text: "س1.30 - معامل x^3 في متسلسلة ماكلوران لـ e^{3x} هو:",
         options: ["أ) 1/6", "ب) 9/2", "ج) 3/2", "د) 1/3", "هـ) 2/3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 e^{3x} = Σ (3x)^n/n!.
 مصطلح x^3 هو 27/6 = 9/2.`
     },
     "25_tf31": {
         text: "س2.31 - الرسوم البيانية لجميع الدوال اللوغاريتمية تمر بالنقطة (0,1)",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: فهم الدالة اللوغاريتمية
 الدالة اللوغاريتمية العامة: y = logₐ(x) حيث a > 0 و a ≠ 1
@@ -492,7 +521,7 @@ e^{3x} = Σ (3x)^n/n!.
     },
     "25_tf32": {
         text: "س2.32 - استخدام التكامل بالتجزئة مع u = x و dv = e^(x³)dx لحساب ∫ xe^(x³)dx هو اختيار جيد",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: تحليل الاختيار المقترح
 إذا اخترنا:
@@ -516,7 +545,7 @@ dv = e^(x³)dx  →  v = ∫ e^(x³)dx = ؟؟؟
     },
     "25_tf33": {
         text: "س2.33 - الدالة e^(-x) سالبة لبعض قيم x",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: خصائص الدالة الأسية الأساسية
 الدالة e^x (الدالة الأسية الطبيعية) لها خاصية مهمة:
@@ -543,7 +572,7 @@ e^x > 0  لجميع قيم x الحقيقية
     },
     "25_tf34": {
         text: "س2.34 - ∫[f(x)]ⁿ f'(x) dx = [f(x)]^(n+1)/(n+1) + c",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذه صيغة التعويض القياسية (Power Rule for Integration)
 
@@ -567,7 +596,7 @@ d/dx{[f(x)]^(n+1)/(n+1)} = [(n+1)[f(x)]ⁿ·f'(x)]/(n+1) = [f(x)]ⁿ f'(x) ✓
     },
     "25_tf35": {
         text: "س2.35 - d/dx(tan x) = lim(h→0) [tan(x+h) - tan(x)]/h",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذا هو تعريف المشتقة من المبادئ الأولى (First Principles)
 
@@ -591,7 +620,7 @@ d/dx(tan x) = sec²(x)
     "24_q1": {
         text: "س1.1 - ∫ 2e^x dx =",
         options: ["أ) 2e^x + c", "ب) 2ln(x) + c", "ج) 2sin(x) + c", "د) (2/(x+1))e^(x+1) + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نريد حساب التكامل ∫ 2e^x dx
 
@@ -609,7 +638,7 @@ d/dx(2e^x) = 2e^x ✓
     "24_q2": {
         text: "س1.2 - اشتق الدالة (x³ + 2)²",
         options: ["أ) (x+2)^(1/2)", "ب) 2x²(x³+2)", "ج) 6x²(x³+2)", "د) 3x²(x³+2)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة السلسلة (Chain Rule)
 
@@ -631,7 +660,7 @@ dy/dx = 2(x³ + 2) × 3x² = 6x²(x³ + 2)
     "24_q3": {
         text: "س1.3 - باستخدام التعويض u = sin(x)، التكامل ∫ sin³(x)cos(x) dx يساوي:",
         options: ["أ) ∫ u³ du", "ب) ∫ 3u² du", "ج) (1/3)∫ u³ du", "د) ∫ u⁴ du"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم طريقة التعويض
 
@@ -652,7 +681,7 @@ du = cos(x) dx
     "24_q4": {
         text: "س1.4 - ∫₀¹ xe^(x²) dx =",
         options: ["أ) (1/2)(e+1)", "ب) e-1", "ج) (1/2)(e-1)", "د) e²/2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -675,7 +704,7 @@ du = 2x dx
     "24_q5": {
         text: "س1.5 - إذا كان ∫₁¹⁰ f(x)dx = 4 و ∫₁₀³ f(x)dx = 7، فإن ∫₁³ f(x)dx =",
         options: ["أ) 11", "ب) -3", "ج) 3", "د) 10"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -688,7 +717,7 @@ du = 2x dx
     "24_q6": {
         text: "س1.6 - باستخدام التكامل بالتجزئة، ∫ xe^x dx يساوي:",
         options: ["أ) xe^x + ∫ e^x dx", "ب) xe^x - ∫ e^x dx", "ج) x - ∫ e^x dx", "د) x + ∫ e^x dx"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم التكامل بالتجزئة: ∫ u dv = uv - ∫ v du
 
@@ -698,7 +727,7 @@ du = 2x dx
     "24_q7": {
         text: "س1.7 - إذا كان f(x)=\\frac{e^{2x}}{2x}، فإن f'(1)=",
         options: ["أ) \\frac{e^2}{2}", "ب) -\\frac{e^2}{2}", "ج) \\frac{3e^2}{2}", "د) 1"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة القسمة:
 f'(x)=\\frac{(2e^{2x})(2x)-e^{2x}(2)}{(2x)^2}
@@ -708,7 +737,7 @@ f'(x)=\\frac{(2e^{2x})(2x)-e^{2x}(2)}{(2x)^2}
     "24_q8": {
         text: "س1.8 - باستخدام u=x^3، فإن ∫ x^2 cos x^3 dx يساوي:",
         options: ["أ) ∫ cos u du", "ب) \\frac{1}{3} ∫ cos u du", "ج) ∫ 3 cos u du", "د) ∫ u^2 du"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 u=x^3 → du=3x^2 dx.
 ∴ x^2 dx = du/3.
@@ -717,7 +746,7 @@ u=x^3 → du=3x^2 dx.
     "24_q9": {
         text: "س1.9 - ∫ x^2 cos x^3 dx =",
         options: ["أ) \\frac{1}{3} sin x^3 + c", "ب) sin x^3 + c", "ج) 3 sin x^3 + c", "د) \\frac{1}{3} x^3 + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 من السؤال السابق: 1/3 \\int cos u du = 1/3 sin u + c.
 إذًا \\int x^2 cos x^3 dx = 1/3 sin x^3 + c.`
@@ -725,7 +754,7 @@ u=x^3 → du=3x^2 dx.
     "24_q10": {
         text: "س1.10 - إذا كانت f(x)=(x^2-2x-1)^{2/3}، فإن f'(0)=",
         options: ["أ) \\frac{2}{3}", "ب) 0", "ج) \\frac{4}{3}", "د) -\\frac{4}{3}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 f'(x)=\\frac{2}{3}(x^2-2x-1)^{-1/3}(2x-2).
 عند x=0: الأس = -1، ومقدار (2x-2)=-2.
@@ -734,7 +763,7 @@ f'(x)=\\frac{2}{3}(x^2-2x-1)^{-1/3}(2x-2).
     "24_q11": {
         text: "س1.11 - إذا كان x=t^2+1 و y=3t+1، فإن dy/dx =",
         options: ["أ) \\frac{3}{2t}", "ب) \\frac{3t}{2}", "ج) 6t", "د) \\frac{2t}{3}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 dy/dt=3, dx/dt=2t.
 ∴ dy/dx = \\frac{3}{2t}.`
@@ -742,7 +771,7 @@ dy/dt=3, dx/dt=2t.
     "24_q12": {
         text: "س1.12 - التحليل إلى كسور جزئية لـ \\frac{1}{(x+2)(x+1)} هو:",
         options: ["أ) (\\frac{3}{x+2}-\\frac{3}{x+1})", "ب) (\\frac{1}{x+1}-\\frac{1}{x+2})", "ج) (\\frac{3}{x+1}+\\frac{3}{x+2})", "د) (\\frac{1}{x+1}+\\frac{3}{x+2})"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نفرض \\frac{1}{(x+2)(x+1)}=\\frac{A}{x+1}+\\frac{B}{x+2}.
 عند x=-1: A=1.
@@ -752,7 +781,7 @@ dy/dt=3, dx/dt=2t.
     "24_q13": {
         text: "س1.13 - ∫ \\frac{1}{(x+2)(x+1)} dx =",
         options: ["أ) 3\\ln|\\frac{x+2}{x+1}|+c", "ب) \\ln|(x+1)(x+2)^3|+c", "ج) 3\\ln|(x+1)(x+2)|+c", "د) \\ln|\\frac{x+1}{x+2}|+c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ∫(1/(x+1)-1/(x+2)) dx = ln|x+1|-ln|x+2|+c.
 = ln|\\frac{x+1}{x+2}|+c.`
@@ -760,7 +789,7 @@ dy/dt=3, dx/dt=2t.
     "24_q14": {
         text: "س1.14 - اشتق y = e^x + 4x^6",
         options: ["أ) e^x + 24x^5", "ب) e^x + 6x^5", "ج) e^x + 4x^6", "د) e^x + \\frac{4}{7}x^7"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 d/dx(e^x)=e^x.
 d/dx(4x^6)=24x^5.
@@ -769,7 +798,7 @@ d/dx(4x^6)=24x^5.
     "24_q15": {
         text: "س1.15 - مساحة المثلث ذي الرؤوس (-3,0)، (2,0)، (2,5) هي:",
         options: ["أ) ∫_{-3}^{0}(x+2)dx", "ب) ∫_{-3}^{2}(x+3)dx", "ج) ∫_0^2(x+3)dz", "د) ∫_{-3}^{2}(x+2)dx"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 خط المستقيم بين (-3,0) و(2,5) هو y=x+3.
 المساحة = ∫_{-3}^{2}(x+3)dx.`
@@ -777,7 +806,7 @@ d/dx(4x^6)=24x^5.
     "24_q16": {
         text: "س1.16 - lim_{x\\to 0} \\frac{e^x-1}{2x} =",
         options: ["أ) \\frac{1}{2}", "ب) 0", "ج) 1", "د) e"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 lim (e^x-1)/x = 1.
 إذاً lim (e^x-1)/(2x) = 1/2.`
@@ -785,7 +814,7 @@ lim (e^x-1)/x = 1.
     "24_q17": {
         text: "س1.17 - طول المنحنى x=cos^3 t، y=sin^3 t، 0≤t≤π/2 هو:",
         options: ["أ) ∫_0^{π/2} √{3cos^2 t + 3 sin^2 t} dt", "ب) ∫_0^{π/2} √{-3cos^2 t sin t + 3 sin^2 t cos t} dt", "ج) ∫_0^{π/2} √{9 cos^{-t} t + 9 sin^4 t} dt", "د) ∫_0^{π/2} √{9 cos^4 t sin^2 t + 9 sin^4 t cos^2 t} dt"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 dx/dt=-3cos^2 t sin t.
 dy/dt=3sin^2 t cos t.
@@ -794,14 +823,14 @@ dy/dt=3sin^2 t cos t.
     "24_q18": {
         text: "س1.18 - طول المنحنى في السؤال السابق يساوي:",
         options: ["أ) \\frac{√3}{2}π", "ب) 6", "ج) \\frac{3}{2}", "د) -6"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الطول = ∫_0^{π/2} 3 sin t cos t dt = 3/2 [sin^2 t]_0^{π/2} = 3/2.`
     },
     "24_q19": {
         text: "س1.19 - إذا كان x=t^3-t^2-1 و y=t^4+2t^2-8t، فإن الميل العمودي يحدث عند:",
         options: ["أ) 0 و 1 و 2/3", "ب) 1 فقط", "ج) 0 و 2/3 فقط", "د) لا قيمة"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الميل العمودي عندما dx/dt = 0.
 dx/dt = 3t^2 - 2t = t(3t-2).
@@ -810,14 +839,14 @@ dx/dt = 3t^2 - 2t = t(3t-2).
     "24_q20": {
         text: "س1.20 - المساحة بين y=x^2 و y=-x من x=0 إلى x=2 هي:",
         options: ["أ) 2/3", "ب) 8/3", "ج) 4", "د) 14/3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ∫_0^2 (x^2 - (-x)) dx = ∫_0^2 (x^2+x) dx = 14/3.`
     },
     "24_q21": {
         text: "س1.21 - ∫ x cos x dx =",
         options: ["أ) x sin x - cos x + c", "ب) x sin x + cos x + c", "ج) -x sin x + cos x + c", "د) x sin x + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 باستخدام التكامل بالتجزئة: u=x، v=sin x.
 ∴ ∫ x cos x dx = x sin x + cos x + c.`
@@ -825,7 +854,7 @@ dx/dt = 3t^2 - 2t = t(3t-2).
     "24_q22": {
         text: "س1.22 - إذا كان e^{f(x)}=1+x^2، فإن f'(x)=",
         options: ["أ) 1/(1+x^2)", "ب) 2x/(1+x^2)", "ج) 2x(1+x^2)", "د) 2x e^{1+x^2}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 f(x)=ln(1+x^2).
 ∴ f'(x)=2x/(1+x^2).`
@@ -833,7 +862,7 @@ f(x)=ln(1+x^2).
     "24_q23": {
         text: "س1.23 - إذا كان f(x)=\\frac{√{2x+5}-√{x+7}}{x-2} و f مستمرة عند x=2، فإن k =",
         options: ["أ) 0", "ب) 1/6", "ج) 1/3", "د) 1"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نحسب النهاية بعد التربيع.
 الناتج = 1/(√9+√9) = 1/6.`
@@ -841,7 +870,7 @@ f(x)=ln(1+x^2).
     "24_q24": {
         text: "س1.24 - ln(x-2) < 0 إذا وفقط إذا:",
         options: ["أ) x<3", "ب) 0<x<3", "ج) x>2", "د) 2<x<3"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 ln(y)<0 عندما 0<y<1.
 مع y=x-2 → 2<x<3.`
@@ -849,7 +878,7 @@ ln(y)<0 عندما 0<y<1.
     "24_q25": {
         text: "س1.25 - إذا كان 3x^2+2xy+y^2=2، فإن dy/dx عند x=1 هو:",
         options: ["أ) -2", "ب) 0", "ج) 2", "د) غير معرف"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نشتق ضمنياً:
 6x + 2y + 2x y' + 2y y' = 0.
@@ -859,7 +888,7 @@ ln(y)<0 عندما 0<y<1.
     "24_q26": {
         text: "س1.26 - إذا كان y=\\tan u، u=v-1/v، v=ln x، فأوجد dy/dx عند x=e.",
         options: ["أ) sec^2 e", "ب) 1/e", "ج) 2/e", "د) 1"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 dy/dx = sec^2 u · u'.
  u' = v' + (1/v^2)v' = 1/x(1+1/v^2).
@@ -868,7 +897,7 @@ dy/dx = sec^2 u · u'.
     "24_q27": {
         text: "س1.27 - d/dx(sin^{-1}2x) =",
         options: ["أ) -1/(2√{1-4x^2})", "ب) -2/√{4x^2-1}", "ج) 2/√{1-4x^2}", "د) 2/√{4x^2-1}"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 d/dx sin^{-1}(u)=u'/√{1-u^2}.
 مع u=2x و u'=2.
@@ -877,14 +906,14 @@ d/dx sin^{-1}(u)=u'/√{1-u^2}.
     "24_q28": {
         text: "س1.28 - حجم الدوران حول المحور x للمنطقة تحت y=x^2 من x=0 إلى x=1 هو:",
         options: ["أ) π/6", "ب) π/3", "ج) π/5", "د) π/2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
     },
     "24_q29": {
         text: "س1.29 - إذا كان ∫ f(x) sin x dx = -f(x) cos x + ∫ 9x^2 cos x dx، فإن f(x)=",
         options: ["أ) 3x^3", "ب) x^3", "ج) -x^3", "د) sin x"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 من IBP: ∫ f sin x dx = -f cos x + ∫ f' cos x dx.
 إذا كان التكامل الثاني = ∫ 9x^2 cos x dx، فإن f'=9x^2.
@@ -893,14 +922,14 @@ V=π∫_0^1 (x^2)^2 dx = π∫_0^1 x^4 dx = π/5.`
     "24_q30": {
         text: "س1.30 - معامل x^3 في متسلسلة ماكلوران لـ e^{3x} هو:",
         options: ["أ) 1/6", "ب) 1/3", "ج) 3/2", "د) 9/2"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 e^{3x} = Σ (3x)^n/n!.
 مصطلح x^3 هو 27/6 = 9/2.`
     },
     "24_tf31": {
         text: "س2.31 - الرسوم البيانية لجميع الدوال اللوغاريتمية تمر بالنقطة (0,1)",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -911,7 +940,7 @@ e^{3x} = Σ (3x)^n/n!.
     },
     "24_tf32": {
         text: "س2.32 - استخدام التكامل بالتجزئة مع u = x و dv = e^(x³)dx لحساب ∫ xe^(x³)dx هو اختيار جيد",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -921,7 +950,7 @@ e^{3x} = Σ (3x)^n/n!.
     },
     "24_tf33": {
         text: "س2.33 - الدالة e^(-x) سالبة لبعض قيم x",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -931,7 +960,7 @@ e^(-x) = 1/e^x > 0 دائماً لجميع قيم x
     },
     "24_tf34": {
         text: "س2.34 - ∫[f(x)]ⁿ f'(x) dx = [f(x)]^(n+1)/(n+1) + c",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 (نفس السؤال في امتحان 2025)
 
@@ -941,7 +970,7 @@ e^(-x) = 1/e^x > 0 دائماً لجميع قيم x
     },
     "24_tf35": {
         text: "س2.35 - d/dx(sin x) = lim(h→0) [sin(x+h) - sin(x)]/h",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذا هو تعريف المشتقة من المبادئ الأولى
 
@@ -955,7 +984,7 @@ f'(x) = lim(h→0) [f(x+h) - f(x)]/h
     "23_q1": {
         text: "س1.1 - أوجد قيمة c التي تجعل الدالة متصلة",
         options: ["أ) 4", "ب) 6", "ج) 1", "د) لا شيء مما سبق"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 لكي تكون الدالة متصلة عند x=1، يجب أن يتساوى النهايتين من اليمين واليسار.
 
@@ -977,7 +1006,7 @@ c = 4
     "23_q2": {
         text: "س1.2 - اشتق الدالة h(x) = csc√x",
         options: ["أ) -cot²√x", "ب) (-csc√x cot√x)/(2√x)", "ج) -csc(1/2√x) cot(1/2√x)", "د) لا شيء مما سبق"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة السلسلة (Chain Rule) للاشتقاق.
 
@@ -996,7 +1025,7 @@ h'(x) = -csc(√x)·cot(√x)/(2√x)
     "23_q3": {
         text: "س1.3 - إذا كان 2ln(x) - 2 = 0، فإن x =",
         options: ["أ) 0", "ب) e", "ج) 1", "د) لا شيء مما سبق"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نحل المعادلة خطوة بخطوة:
 
@@ -1019,7 +1048,7 @@ ln(x) = 1
     "23_q4": {
         text: "س1.4 - أوجد dy/dx للمعادلة 5x² - 2xy + 7y² = 0",
         options: ["أ) 10x - 2y + 12", "ب) (y-5x)/(7-y)", "ج) (y-5x)/(7y-x)", "د) لا شيء مما سبق"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم الاشتقاق الضمني (Implicit Differentiation)
 
@@ -1045,7 +1074,7 @@ y' = (y - 5x)/(7y - x)
     "23_q5": {
         text: "س1.5 - إذا كان y = cot(t) و x = tan(t)، فإن dy/dx =",
         options: ["أ) -cot²t", "ب) cot²t", "ج) -tan²t", "د) tan²t"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة المشتقات البارامترية:
 dy/dx = (dy/dt)/(dx/dt)
@@ -1068,7 +1097,7 @@ dy/dx = (-csc²t)/(sec²t)
     },
     "23_tf1": {
         text: "س2.1 - إذا كان y = tan⁻¹(x) + tan⁻¹(1/x)، فإن y' = 0",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: نلاحظ أن tan⁻¹(x) + tan⁻¹(1/x) = π/2 لـ x > 0
 
@@ -1092,7 +1121,7 @@ y' = d/dx(π/2) = 0
     },
     "23_tf2": {
         text: "س2.2 - النهاية lim(x→1) [ln(x)/(x-1)] = 1",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: نتحقق من الشكل
 عند x = 1: ln(1)/(1-1) = 0/0 (شكل غير معين)
@@ -1108,7 +1137,7 @@ lim(x→1) [ln(x)/(x-1)]
     },
     "23_tf3": {
         text: "س2.3 - هل 5^π = e^(π ln 5)؟",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذه خاصية أساسية من خواص الأسس واللوغاريتمات.
 
@@ -1131,7 +1160,7 @@ y = e^(b·ln(a))
     },
     "23_tf4": {
         text: "س2.4 - إذا كان y = ln(x)/(1+ln(x))، فإن y'(e) = (e-1)/4",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: نستخدم قاعدة القسمة
 y = ln(x)/(1+ln(x))
@@ -1154,7 +1183,7 @@ y'(e) = 1/(4e)
     },
     "23_tf5": {
         text: "س2.5 - هل sin(sin⁻¹(2)) = 2؟",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: فهم نطاق الدالة sin⁻¹
 الدالة العكسية للجيب sin⁻¹(x) (أو arcsin(x))
@@ -1174,7 +1203,7 @@ sin⁻¹(2) غير معرفة (undefined)
     "25_q1": {
         text: "س1.1 - ∫ 2e^(3x) dx =",
         options: ["أ) 2e^x + c", "ب) 2ln(x) + c", "ج) (2/3)e^(3x) + c", "د) 2e^(3x) + c", "هـ) 6e^(3x) + c"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نتكامل الدالة 2e^(3x)
 
@@ -1191,7 +1220,7 @@ sin⁻¹(2) غير معرفة (undefined)
     "25_q2": {
         text: "س1.2 - اشتق (x² + 2)³",
         options: ["أ) (x+2)^(1/2)", "ب) 2x(x²+2)²", "ج) 6x²(x³+2)²", "د) 3x²(x³+2)", "هـ) 6x(x²+2)²"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم قاعدة السلسلة (Chain Rule)
 
@@ -1214,7 +1243,7 @@ d/dx[(x²+2)³] = 3(x²+2)² × 2x
     "25_q3": {
         text: "س1.3 - باستخدام التعويض u = cos(x)، ∫ cos³(x)sin(x) dx يكافئ:",
         options: ["أ) ∫ u³ du", "ب) ∫ 3u² du", "ج) (1/3)∫ u³ du", "د) ∫ u⁴ du", "هـ) -∫ u³ du"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم طريقة التعويض (Substitution)
 
@@ -1233,7 +1262,7 @@ du = -sin(x) dx
     "25_q4": {
         text: "س1.4 - ∫₀¹ xe^(x²) dx =",
         options: ["أ) (1/2)(e+1)", "ب) e-1", "ج) (1/2)(e-1)", "د) e²/2", "هـ) (1/2)e(e³-1)"],
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 نستخدم طريقة التعويض
 
@@ -1256,7 +1285,7 @@ du = 2x dx
     },
     "25_tf31": {
         text: "س2.31 - الرسوم البيانية لجميع الدوال اللوغاريتمية تمر بالنقطة (0,1)",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: فهم الدوال اللوغاريتمية
 الدالة اللوغاريتمية العامة: y = logₐ(x)
@@ -1273,7 +1302,7 @@ du = 2x dx
     },
     "25_tf32": {
         text: "س2.32 - استخدام التكامل بالتجزئة مع u=x و dv=e^(x³)dx لحساب ∫xe^(x³)dx اختيار جيد",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: تحليل الاختيار
 إذا اخترنا u = x و dv = e^(x³)dx
@@ -1293,7 +1322,7 @@ du = 2x dx
     },
     "25_tf33": {
         text: "س2.33 - e^(-x) سالبة لبعض قيم x",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 الخطوة 1: خصائص الدالة الأسية
 الدالة e^x دائماً موجبة لجميع قيم x الحقيقية
@@ -1313,7 +1342,7 @@ e^(-x) > 0 لجميع قيم x
     },
     "25_tf34": {
         text: "س2.34 - ∫[f(x)]ⁿ f'(x) dx = [f(x)]^(n+1)/(n+1) + c",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذه صيغة التعويض القياسية.
 
@@ -1334,7 +1363,7 @@ e^(-x) > 0 لجميع قيم x
     },
     "25_tf35": {
         text: "س2.35 - d/dx(tan x) = lim(h→0) [tan(x+h) - tan(x)]/h",
-        explain: `الشرح التفصيلي:
+        explain: `الاجابات النموذجية:
 
 هذا هو تعريف المشتقة من المبادئ الأولى!
 
@@ -1347,6 +1376,168 @@ d/dx(tan x) = lim(h→0) [tan(x+h) - tan(x)]/h
 هذا هو بالضبط ما هو مكتوب في العبارة.
 
 العبارة صحيحة`
+    },
+
+    // ===================== 2022 Exam Translations =====================
+    "r22_q1": {
+        text: "س1.1 — أوجد قيمة c التي تجعل f(x) مستمرة عند x=0",
+        options: ["أ) 1", "ب) -1/4", "ج) -1/2", "د) لا شيء مما سبق"],
+        explain: `الاجابات النموذجية:
+حتى تكون الدالة مستمرة عند x=0 يجب أن: c = lim(x→0) (1−eˣ)/(e²ˣ−1)
+الخطوة 1: نحلل المقام
+e²ˣ−1 = (eˣ−1)(eˣ+1)
+الخطوة 2: نبسط الكسر
+(1−eˣ)/((eˣ−1)(eˣ+1)) = −(eˣ−1)/((eˣ−1)(eˣ+1)) = −1/(eˣ+1)
+الخطوة 3: نحسب النهاية عند x=0
+lim(x→0) −1/(eˣ+1) = −1/(1+1) = −1/2
+إذن c = −1/2، والإجابة الصحيحة هي ج) −1/2 ✓`
+    },
+    "r22_q2": {
+        text: "س1.2 — اشتق: h(x) = csc(√x)",
+        options: ["أ) −cot²(√x)", "ب) −csc(√x)·cot(√x)/(2√x)", "ج) −csc(1/(2√x))·cot(1/(2√x))", "د) لا شيء مما سبق"],
+        explain: `الاجابات النموذجية:
+نستخدم قاعدة السلسلة (Chain Rule)
+نعلم أن: d/dx[csc(u)] = −csc(u)·cot(u)·u'
+نفرض u = √x → u' = 1/(2√x)
+h'(x) = −csc(√x)·cot(√x)·(1/(2√x)) = −csc(√x)·cot(√x)/(2√x) ✓`
+    },
+    "r22_q3": {
+        text: "س1.3 — إذا كان 2 ln x − 2 = 0، فإن x =",
+        options: ["أ) 0", "ب) e", "ج) 1", "د) لا شيء مما سبق"],
+        explain: `الاجابات النموذجية:
+2 ln x = 2 → ln x = 1 → x = e^1 = e ✓`
+    },
+    "r22_q4": {
+        text: "س1.4 — أوجد dy/dx للمعادلة: 5x²−2xy+7y²=0",
+        options: ["أ) 10x−2y+12", "ب) (y−5x)/(7−y)", "ج) (y−5x)/(7y−x)", "د) لا شيء مما سبق"],
+        explain: `الاجابات النموذجية:
+نستخدم الاشتقاق الضمني (Implicit Differentiation)
+نشتق الطرفين بالنسبة لـ x:
+10x − (2y+2x·y') + 14y·y' = 0
+y'(14y−2x) = 2y−10x
+y' = (2y−10x)/(14y−2x) = (y−5x)/(7y−x) ✓`
+    },
+    "r22_q5": {
+        text: "س1.5 — إذا كان y=cot t و x=tan t، فإن dy/dx =",
+        options: ["أ) −cot²t", "ب) csc²t", "ج) sec²t", "د) لا شيء مما سبق"],
+        explain: `الاجابات النموذجية:
+نستخدم: dy/dx = (dy/dt)/(dx/dt)
+dy/dt = −csc²t
+dx/dt = sec²t
+dy/dx = (−csc²t)/(sec²t) = −cos²t/sin²t = −cot²t ✓`
+    },
+    "r22_tf1": {
+        text: "س2.1 — إذا كان y = tan⁻¹x + tan⁻¹(1/x)، فإن y' = 0",
+        explain: `الاجابات النموذجية:
+d/dx[tan⁻¹x] = 1/(1+x²)
+d/dx[tan⁻¹(1/x)] = [1/(1+(1/x)²)]·(−1/x²) = [x²/(1+x²)]·(−1/x²) = −1/(1+x²)
+y' = 1/(1+x²) − 1/(1+x²) = 0 ✓`
+    },
+    "r22_tf2": {
+        text: "س2.2 — إذا كان f(1)=4 و f'(1)=2، فإن مشتقة ln f(eˣ) عند x=0 تساوي 1/2",
+        explain: `الاجابات النموذجية:
+نفرض g(x) = ln f(eˣ)
+g'(x) = [f'(eˣ)·eˣ]/f(eˣ)
+عند x=0: g'(0) = f'(1)·1/f(1) = 2/4 = 1/2 ✓`
+    },
+    "r22_tf3": {
+        text: "س2.3 — 5^π = e^(π ln 5)",
+        explain: `الاجابات النموذجية:
+بالقانون: a^b = e^(b ln a)
+بتعويض a=5 و b=π: 5^π = e^(π ln 5) ✓`
+    },
+    "r22_tf4": {
+        text: "س2.4 — إذا كان y = ln x/(1+ln x)، فإن y'(e) = e⁻¹/4",
+        explain: `الاجابات النموذجية:
+نستخدم قاعدة القسمة:
+y' = [(1/x)(1+ln x) − ln x·(1/x)]/(1+ln x)² = (1/x)/(1+ln x)² = 1/[x(1+ln x)²]
+عند x=e (حيث ln e=1):
+y'(e) = 1/[e·(1+1)²] = 1/(4e) = e⁻¹/4 ✓`
+    },
+    "r22_tf5": {
+        text: "س2.5 — sin(sin⁻¹ 2) = 2",
+        explain: `الاجابات النموذجية:
+دالة sin⁻¹(x) معرفة فقط عندما −1 ≤ x ≤ 1
+القيمة 2 > 1، إذن sin⁻¹(2) غير معرفة في الأعداد الحقيقية.
+العبارة خاطئة ✗`
+    },
+    "r22_hyp": {
+        text: "س3.1 — حل: 5 cosh x − 4 sinh x = 3",
+        explain: `الاجابات النموذجية:
+cosh x = (eˣ+e⁻ˣ)/2 و sinh x = (eˣ−e⁻ˣ)/2
+5(eˣ+e⁻ˣ)/2 − 4(eˣ−e⁻ˣ)/2 = 3
+نضرب في 2: eˣ + 9e⁻ˣ = 6
+نضرب في eˣ: (eˣ)²−6eˣ+9 = 0 → (eˣ−3)² = 0
+eˣ=3 → x = ln 3`
+    },
+    "r22_mac": {
+        text: "س3.2 — أوجد متسلسلة ماكلوران لـ cos x ثم احسب: lim(x→0) (1−cos x)/x²",
+        explain: `الاجابات النموذجية:
+cos x = 1 − x²/2! + x⁴/4! − ...
+lim(x→0) (1−cos x)/x² = lim(x→0) [x²/2 − x⁴/24 + ...]/x²
+= lim(x→0) [1/2 − x²/24 + ...] = 1/2`
+    },
+    "r22_lim_a": {
+        text: "س3.3أ — أوجد: lim(n→∞) (1 − 3/(2n))^(2n)",
+        explain: `الاجابات النموذجية:
+نستخدم: lim(k→∞) (1+a/k)^k = e^a
+نفرض k=2n → (1−3/(2n))^(2n) = (1+(−3)/k)^k
+النهاية = e^(−3)`
+    },
+    "r22_lim_b": {
+        text: "س3.3ب — أوجد: lim(x→π/2) (sec x − tan x)",
+        explain: `الاجابات النموذجية:
+sec x − tan x = (1−sin x)/cos x الشكل 0/0
+نطبق قاعدة لوبيتال:
+lim (−cos x)/(−sin x) = cos(π/2)/sin(π/2) = 0/1 = 0`
+    },
+    "r22_lim_c": {
+        text: "س3.3ج — أوجد: lim(x→0⁺) x·ln x",
+        explain: `الاجابات النموذجية:
+الشكل 0·(−∞) → نحول: x·ln x = ln x/(1/x) الشكل −∞/∞
+نطبق قاعدة لوبيتال: (1/x)/(−1/x²) = −x → 0 عندما x→0⁺`
+    },
+    "r22_int_a": {
+        text: "س4.1أ — أوجد: ∫ x·√(x+1) dx",
+        explain: `الاجابات النموذجية:
+نفرض u=x+1 → x=u−1 و dx=du
+∫(u−1)√u du = ∫(u^(3/2)−u^(1/2)) du
+= (2/5)u^(5/2) − (2/3)u^(3/2) + C
+نعوض u=x+1: = (2/5)(x+1)^(5/2) − (2/3)(x+1)^(3/2) + C`
+    },
+    "r22_int_b": {
+        text: "س4.1ب — أوجد: ∫₀^(π/2) sin x/(sin x+cos x) dx",
+        explain: `الاجابات النموذجية:
+نفرض I = ∫₀^(π/2) sin x/(sin x+cos x) dx
+بخاصية ∫₀^a f(x)dx = ∫₀^a f(a−x)dx:
+I = ∫₀^(π/2) cos x/(cos x+sin x) dx
+نجمع: 2I = ∫₀^(π/2) 1 dx = π/2 → I = π/4`
+    },
+    "r22_int_c": {
+        text: "س4.1ج — أوجد: ∫ x³/√(x²−1) dx",
+        explain: `الاجابات النموذجية:
+نفرض u=x²−1 → x²=u+1 و x dx=du/2
+∫[x²/√(x²−1)]·x dx = ∫(u+1)/√u·(du/2)
+= (1/2)∫(u^(1/2)+u^(−1/2)) du
+= (1/3)(x²−1)^(3/2) + (x²−1)^(1/2) + C`
+    },
+    "r22_piece": {
+        text: "س4.2 — إذا كانت f(x)=e^(2x) عند x>1 و 3x² عند x≤1، أوجد ∫₋₂⁵ f(x) dx",
+        explain: `الاجابات النموذجية:
+نقسم عند x=1:
+∫₋₂⁵ f(x)dx = ∫₋₂¹ 3x² dx + ∫₁⁵ e^(2x) dx
+∫₋₂¹ 3x² dx = [x³]₋₂¹ = 1−(−8) = 9
+∫₁⁵ e^(2x) dx = [(1/2)e^(2x)]₁⁵ = (1/2)e^10−(1/2)e²
+المجموع = 9 + (e^10−e²)/2`
+    },
+    "r22_area2": {
+        text: "س4.3 — أوجد المساحة بين y=2x²+3 ومحور x من x=−1 إلى x=3",
+        explain: `الاجابات النموذجية:
+2x²+3 > 0 دائماً، إذن المنحنى فوق محور x
+المساحة = ∫₋₁³ (2x²+3) dx = [(2/3)x³+3x]₋₁³
+عند x=3: (2/3)(27)+9 = 27
+عند x=−1: (2/3)(−1)−3 = −11/3
+المساحة = 27−(−11/3) = 92/3 ≈ 30.67 وحدة مربعة`
     }
 };
 
@@ -2202,6 +2393,235 @@ const examDatabase = {
                 modelSolution: "Intersections: x²=√x → x⁴=x → x(x³−1)=0 → x=0,1.\nArea = ∫₀¹(√x−x²)dx = [(2/3)x^(3/2)−x³/3]₀¹ = 2/3−1/3 = 1/3."
             }
         ]
+    },
+
+    "room_2022": {
+        title: "Final Exam 2021/2022 — Mathematics 2",
+        meta: "MATH102 | June 2022 | Time: 2 Hours | Total: 70 Marks",
+        questions: [
+            {
+                id: "r22_q1", type: "mcq",
+                text: "Q1.1 — Find the value of $c$ for which $f(x) = \\begin{cases} \\dfrac{1-e^{x}}{e^{2x}-1}, & x\\ne0 \\\\ c, & x=0 \\end{cases}$ is continuous at $x=0$.",
+                options: ["a) 1","b) -1/4","c) -1/2","d) None of these"],
+                answer: 2,
+                explain: "For continuity at x=0: c = lim(x→0) (1−eˣ)/(e²ˣ−1).\nFactor denominator: e²ˣ−1 = (eˣ−1)(eˣ+1).\nSo (1−eˣ)/((eˣ−1)(eˣ+1)) = −(eˣ−1)/((eˣ−1)(eˣ+1)) = −1/(eˣ+1).\nAt x=0: −1/(1+1) = −1/2.\nThe answer is c) −1/2. ✓"
+            },
+            {
+                id: "r22_q2", type: "mcq",
+                text: "Q1.2 — Differentiate: $h(x) = \\csc\\!\\sqrt{x}$",
+                options: ["a) $-\\cot^2\\!\\sqrt{x}$","b) $\\dfrac{-\\csc\\sqrt{x}\\,\\cot\\sqrt{x}}{2\\sqrt{x}}$","c) $-\\csc\\!\\dfrac{1}{2\\sqrt{x}}\\cot\\!\\dfrac{1}{2\\sqrt{x}}$","d) None of these"],
+                answer: 1,
+                explain: "Chain rule: h'(x) = −csc(√x)·cot(√x) · d/dx(√x) = −csc(√x)·cot(√x) · 1/(2√x)."
+            },
+            {
+                id: "r22_q3", type: "mcq",
+                text: "Q1.3 — If $2\\ln x - 2 = 0$, then $x =$",
+                options: ["a) 0","b) $e$","c) 1","d) None of these"],
+                answer: 1,
+                explain: "2 ln x = 2 → ln x = 1 → x = e¹ = e."
+            },
+            {
+                id: "r22_q4", type: "mcq",
+                text: "Q1.4 — Find $\\dfrac{dy}{dx}$ for $5x^2 - 2xy + 7y^2 = 0$",
+                options: ["a) $10x-2y+12$","b) $\\dfrac{y-5x}{7-y}$","c) $\\dfrac{y-5x}{7y-x}$","d) None of these"],
+                answer: 2,
+                explain: "Implicit differentiation: 10x − 2y − 2x·y' + 14y·y' = 0.\ny'(14y−2x) = 2y−10x → y' = (y−5x)/(7y−x)."
+            },
+            {
+                id: "r22_q5", type: "mcq",
+                text: "Q1.5 — If $y = \\cot t$, $x = \\tan t$, then $\\dfrac{dy}{dx} =$",
+                options: ["a) $-\\cot^2 t$","b) $\\csc^2 t$","c) $\\sec^2 t$","d) None of these"],
+                answer: 0,
+                explain: "Parametric: dy/dt = −csc²t, dx/dt = sec²t.\ndy/dx = (−csc²t)/(sec²t) = −cos²t/sin²t = −cot²t."
+            },
+            {
+                id: "r22_tf1", type: "tf",
+                text: "Q2.1 — If $y = \\tan^{-1}x + \\tan^{-1}\\!\\left(\\tfrac{1}{x}\\right)$, then $y' = 0$.",
+                answer: true,
+                explain: "y' = 1/(1+x²) + [1/(1+(1/x)²)]·(−1/x²).\nSimplify second term: [x²/(1+x²)]·(−1/x²) = −1/(1+x²).\nTotal: 1/(1+x²) − 1/(1+x²) = 0. ✓"
+            },
+            {
+                id: "r22_tf2", type: "tf",
+                text: "Q2.2 — If $f(1)=4$, $f'(1)=2$, the derivative of $\\ln f(e^x)$ w.r.t. $x$ at $x=0$ equals $\\tfrac{1}{2}$.",
+                answer: true,
+                explain: "g(x) = ln f(eˣ) → g'(x) = [f'(eˣ)·eˣ]/f(eˣ).\nAt x=0: g'(0) = f'(1)·1/f(1) = 2/4 = 1/2. ✓"
+            },
+            {
+                id: "r22_tf3", type: "tf",
+                text: "Q2.3 — $5^{\\pi} = e^{\\pi \\ln 5}$",
+                answer: true,
+                explain: "By the identity a^b = e^(b ln a): 5^π = e^(π ln 5). ✓"
+            },
+            {
+                id: "r22_tf4", type: "tf",
+                text: "Q2.4 — If $y = \\tfrac{\\ln x}{1+\\ln x}$, then $y'(e) = \\tfrac{e^{-1}}{4}$.",
+                answer: true,
+                explain: "Quotient rule: y' = [(1/x)(1+ln x) − ln x·(1/x)]/(1+ln x)² = 1/[x(1+ln x)²].\nAt x=e: y'(e) = 1/[e·(1+1)²] = 1/(4e) = e⁻¹/4. ✓"
+            },
+            {
+                id: "r22_tf5", type: "tf",
+                text: "Q2.5 — $\\sin(\\sin^{-1} 2) = 2$",
+                answer: false,
+                explain: "sin⁻¹(x) is only defined for x ∈ [−1, 1]. Since 2 > 1, sin⁻¹(2) is undefined in ℝ. ✗"
+            },
+            {
+                id: "r22_hyp", type: "subjective",
+                text: "Q3.1 — Solve for $x$: $5\\cosh x - 4\\sinh x = 3$",
+                modelSolution: "Substitute cosh x = (eˣ+e⁻ˣ)/2 and sinh x = (eˣ−e⁻ˣ)/2:\n5(eˣ+e⁻ˣ)/2 − 4(eˣ−e⁻ˣ)/2 = 3\nMultiply by 2: 5eˣ+5e⁻ˣ−4eˣ+4e⁻ˣ = 6\n→ eˣ + 9e⁻ˣ = 6\nMultiply by eˣ: (eˣ)² − 6eˣ + 9 = 0 → (eˣ−3)² = 0\neˣ = 3 → x = ln 3."
+            },
+            {
+                id: "r22_mac", type: "subjective",
+                text: "Q3.2 — Find the Maclaurin series of $f(x)=\\cos x$, then use it to evaluate $\\displaystyle\\lim_{x\\to0}\\frac{1-\\cos x}{x^2}$.",
+                modelSolution: "Maclaurin series: cos x = 1 − x²/2! + x⁴/4! − x⁶/6! + …\n\nlim(x→0) (1−cos x)/x² = lim(x→0) [x²/2 − x⁴/24 + …]/x²\n= lim(x→0) [1/2 − x²/24 + …] = 1/2."
+            },
+            {
+                id: "r22_lim_a", type: "subjective",
+                text: "Q3.3a — $\\displaystyle\\lim_{n\\to\\infty}\\left(1-\\frac{3}{2n}\\right)^{2n}$",
+                modelSolution: "Let k = 2n; as n→∞, k→∞.\nUsing lim(k→∞)(1+a/k)^k = eᵃ with a = −3:\nlim = e^(−3)."
+            },
+            {
+                id: "r22_lim_b", type: "subjective",
+                text: "Q3.3b — $\\displaystyle\\lim_{x\\to\\pi/2}(\\sec x - \\tan x)$",
+                modelSolution: "Write as (1−sin x)/cos x  → 0/0 form.\nL'Hôpital: (−cos x)/(−sin x) → cos(π/2)/sin(π/2) = 0/1 = 0."
+            },
+            {
+                id: "r22_lim_c", type: "subjective",
+                text: "Q3.3c — $\\displaystyle\\lim_{x\\to 0^+} x\\ln x$",
+                modelSolution: "0·(−∞) form. Write as ln x/(1/x) → −∞/∞.\nL'Hôpital: (1/x)/(−1/x²) = −x → 0 as x→0⁺."
+            },
+            {
+                id: "r22_int_a", type: "subjective",
+                text: "Q4.1a — $\\displaystyle\\int x\\sqrt{x+1}\\,dx$",
+                modelSolution: "Let u = x+1 → x = u−1, dx = du.\n∫(u−1)√u du = ∫(u^(3/2)−u^(1/2)) du\n= (2/5)u^(5/2) − (2/3)u^(3/2) + C\n= (2/5)(x+1)^(5/2) − (2/3)(x+1)^(3/2) + C."
+            },
+            {
+                id: "r22_int_b", type: "subjective",
+                text: "Q4.1b — $\\displaystyle\\int_0^{\\pi/2}\\frac{\\sin x}{\\sin x+\\cos x}\\,dx$",
+                modelSolution: "Let I = ∫₀^(π/2) sin x/(sin x+cos x) dx.\nUsing the property ∫₀^(π/2) f(x)dx = ∫₀^(π/2) f(π/2−x)dx:\nI = ∫₀^(π/2) cos x/(cos x+sin x) dx.\nAdding: 2I = ∫₀^(π/2) 1 dx = π/2.\nTherefore I = π/4."
+            },
+            {
+                id: "r22_int_c", type: "subjective",
+                text: "Q4.1c — $\\displaystyle\\int\\frac{x^3}{\\sqrt{x^2-1}}\\,dx$",
+                modelSolution: "Let u = x²−1 → x² = u+1, x dx = du/2.\n∫[x²/√(x²−1)]·x dx = ∫(u+1)/√u · du/2\n= (1/2)∫(u^(1/2)+u^(−1/2)) du\n= (1/2)[(2/3)u^(3/2)+2u^(1/2)] + C\n= (1/3)(x²−1)^(3/2) + (x²−1)^(1/2) + C."
+            },
+            {
+                id: "r22_piece", type: "subjective",
+                text: "Q4.2 — If $f(x)=\\begin{cases}e^{2x},& x>1\\\\ 3x^2,& x\\le1\\end{cases}$, find $\\displaystyle\\int_{-2}^{5}f(x)\\,dx$.",
+                modelSolution: "Split at x = 1:\n∫₋₂⁵ f(x)dx = ∫₋₂¹ 3x² dx + ∫₁⁵ e^(2x) dx.\n∫₋₂¹ 3x² dx = [x³]₋₂¹ = 1−(−8) = 9.\n∫₁⁵ e^(2x) dx = [(1/2)e^(2x)]₁⁵ = (1/2)e¹⁰ − (1/2)e².\nTotal = 9 + (e¹⁰−e²)/2."
+            },
+            {
+                id: "r22_area2", type: "subjective",
+                text: "Q4.3 — Find the area bounded by $y=2x^2+3$ and the $x$-axis from $x=-1$ to $x=3$.",
+                modelSolution: "Since 2x²+3 > 0 for all x:\nArea = ∫₋₁³ (2x²+3) dx = [(2/3)x³+3x]₋₁³\nAt x=3: (2/3)(27)+9 = 18+9 = 27.\nAt x=−1: (2/3)(−1)−3 = −2/3−3 = −11/3.\nArea = 27−(−11/3) = 81/3+11/3 = 92/3 ≈ 30.67 sq. units."
+            }
+        ]
+    },
+
+    "room_2020": {
+        title: "Final Exam 2019/2020 — Mathematics 2",
+        meta: "MATH102 | Academic Year 2019/2020 | IT Program | Time: 2 Hours",
+        questions: [
+            {
+                id: "r20_q1a", type: "subjective",
+                text: "Q1.1 — Derive the equation of parabola having its axis parallel to the y-axis and passing through $(0,3)$, $(2,0)$, and $(3,2)$.",
+                modelSolution: "General form: y = ax² + bx + c.\nAt (0,3): c = 3.\nAt (2,0): 4a + 2b = −3 ... (1)\nAt (3,2): 9a + 3b = −1 ... (2)\nFrom (1): b = −2a − 1.5. Sub into (2):\n3a = 3.5 → a = 7/6, b = −23/6.\nAnswer: y = (7/6)x² − (23/6)x + 3\nor equivalently: 7x² − 23x − 6y + 18 = 0."
+            },
+            {
+                id: "r20_q1b", type: "subjective",
+                text: "Q1.2 — Find the focus, latus rectum length, and directrix of $x^2 + 5y = 0$.",
+                modelSolution: "Rewrite: x² = −5y. Compare with x² = −4ay → 4a = 5 → a = 5/4.\nParabola opens downward, vertex at origin.\n• Focus: (0, −5/4)\n• Latus rectum length: 4a = 5\n• Directrix: y = 5/4."
+            },
+            {
+                id: "r20_q1c", type: "subjective",
+                text: "Q1.3 — Define the circle and parabola.",
+                modelSolution: "Circle: The locus of all points in a plane equidistant (radius r) from a fixed point (center).\nParabola: The locus of all points in a plane equidistant from a fixed point (focus) and a fixed line (directrix)."
+            },
+            {
+                id: "r20_q1d", type: "subjective",
+                text: "Q1.4 — Prove that $2x^2 + 5xy + 2y^2 = 0$ represents two straight lines, then find them.",
+                modelSolution: "Form: Ax² + 2Hxy + By² = 0. Here A=2, H=5/2, B=2.\nDiscriminant: H²−AB = 25/4 − 4 = 9/4 > 0 → two real lines.\nFactor: 2x² + 4xy + xy + 2y² = 2x(x+2y) + y(x+2y) = (2x+y)(x+2y) = 0.\nLines: 2x + y = 0 and x + 2y = 0."
+            },
+            {
+                id: "r20_q2a", type: "subjective",
+                text: "Q2.1a — Find $\\dfrac{dy}{dx}$: $y = (\\cos x)^{\\sin x}$",
+                modelSolution: "Logarithmic differentiation: ln y = sin x · ln(cos x).\n(1/y)y' = cos x · ln(cos x) + sin x · (−sin x / cos x)\n= cos x · ln(cos x) − sin²x / cos x.\ny' = (cos x)^(sin x) · [cos x · ln(cos x) − sin²x / cos x]."
+            },
+            {
+                id: "r20_q2b", type: "subjective",
+                text: "Q2.1b — Find $\\dfrac{dy}{dx}$: $y = \\log_5(3x^2) \\cdot \\pi^{2x}$",
+                modelSolution: "Product rule: u = log₅(3x²) = ln(3x²)/ln5, v = π^(2x).\nu' = (1/ln5)·(6x/3x²) = 2/(x ln5).\nv' = 2π^(2x) ln π.\ny' = 2π^(2x) [1/(x ln5) + ln π · log₅(3x²)]."
+            },
+            {
+                id: "r20_q2c", type: "subjective",
+                text: "Q2.1c — Find $\\dfrac{dy}{dx}$: $y = \\text{sech}^3(3x)$",
+                modelSolution: "Chain rule: y' = 3 sech²(3x) · d/dx[sech(3x)].\nd/dx[sech(u)] = −sech(u)tanh(u).\ny' = 3 sech²(3x) · (−sech(3x)tanh(3x) · 3)\n= −9 sech³(3x) tanh(3x)."
+            },
+            {
+                id: "r20_q2d", type: "subjective",
+                text: "Q2.2 — Solve: $\\cosh(\\ln x) - 2\\sinh(\\ln x) = 1$",
+                modelSolution: "cosh(ln x) = (x + 1/x)/2, sinh(ln x) = (x − 1/x)/2.\nSubstitute: (x+1/x)/2 − 2·(x−1/x)/2 = 1.\nMultiply by 2: (x+1/x) − 2(x−1/x) = 2.\n→ −x + 3/x = 2 → x² + 2x − 3 = 0 → (x+3)(x−1) = 0.\nx = −3 (rejected, ln undefined) or x = 1.\nAnswer: x = 1."
+            },
+            {
+                id: "r20_q3a", type: "subjective",
+                text: "Q3a — $\\int x\\sinh(x)\\,dx$",
+                modelSolution: "IBP: u = x, dv = sinh(x)dx → v = cosh(x).\n= x cosh(x) − ∫cosh(x)dx\n= x cosh(x) − sinh(x) + C."
+            },
+            {
+                id: "r20_q3b", type: "subjective",
+                text: "Q3b — $\\int x^2 e^x\\,dx$",
+                modelSolution: "Tabular IBP:\nDiff col: x² → 2x → 2 → 0\nInt col:  eˣ → eˣ → eˣ → eˣ\n= x²eˣ − 2xeˣ + 2eˣ + C = eˣ(x²−2x+2) + C."
+            },
+            {
+                id: "r20_q3c", type: "subjective",
+                text: "Q3c — $\\int \\sec x\\,dx$",
+                modelSolution: "Multiply by (sec x + tan x)/(sec x + tan x):\n= ∫(sec²x + sec x tan x)/(sec x + tan x) dx.\nNumerator = d/dx(sec x + tan x).\n= ln|sec x + tan x| + C."
+            },
+            {
+                id: "r20_q4a", type: "subjective",
+                text: "Q4a — $\\int x^2 \\cos(x-5)\\,dx$",
+                modelSolution: "Tabular IBP:\nDiff: x² → 2x → 2 → 0\nInt: cos(x−5) → sin(x−5) → −cos(x−5) → −sin(x−5)\n= x²sin(x−5) + 2x cos(x−5) − 2sin(x−5) + C."
+            },
+            {
+                id: "r20_q4b", type: "subjective",
+                text: "Q4b — $\\int \\dfrac{1}{\\sqrt{9-x^2}}\\,dx$",
+                modelSolution: "Standard form: ∫1/√(a²−x²)dx = sin⁻¹(x/a) + C.\nHere a = 3.\nAnswer: sin⁻¹(x/3) + C."
+            },
+            {
+                id: "r20_q4c", type: "subjective",
+                text: "Q4c — $\\int \\ln(x)\\,dx$",
+                modelSolution: "IBP: u = ln x, dv = dx → du = (1/x)dx, v = x.\n= x ln x − ∫x·(1/x)dx = x ln x − x + C."
+            },
+            {
+                id: "r20_q4d", type: "subjective",
+                text: "Q4d — $\\int x\\cos(x-5)\\,dx$",
+                modelSolution: "IBP: u = x, dv = cos(x−5)dx → v = sin(x−5).\n= x sin(x−5) − ∫sin(x−5)dx\n= x sin(x−5) + cos(x−5) + C."
+            },
+            {
+                id: "r20_lim_a", type: "subjective",
+                text: "Q — $\\displaystyle\\lim_{x\\to 0}\\frac{\\tan x - x}{x^3}$",
+                modelSolution: "Form 0/0 → L'Hôpital: (sec²x−1)/(3x²) = tan²x/(3x²).\n= (1/3)·[lim(tan x/x)]² = (1/3)·1 = 1/3."
+            },
+            {
+                id: "r20_lim_b", type: "subjective",
+                text: "Q — $\\displaystyle\\lim_{x\\to 0}\\ln(1-x)$",
+                modelSolution: "Direct substitution (ln is continuous): ln(1−0) = ln(1) = 0."
+            },
+            {
+                id: "r20_lim_c", type: "subjective",
+                text: "Q — $\\displaystyle\\lim_{x\\to\\pi/2}(\\sec x - \\tan x)$",
+                modelSolution: "∞−∞ form. Write as (1−sin x)/cos x → 0/0.\nL'Hôpital: (−cos x)/(−sin x) → cos(π/2)/sin(π/2) = 0/1 = 0."
+            },
+            {
+                id: "r20_lim_d", type: "subjective",
+                text: "Q — $\\displaystyle\\lim_{x\\to\\infty}\\frac{x^2-2x+2}{4x^3+3x-3}$",
+                modelSolution: "Divide by x³: numerator → 0, denominator → 4.\nAnswer: 0/4 = 0."
+            },
+            {
+                id: "r20_prove", type: "subjective",
+                text: "Q — Prove: $\\ln(x/y) = \\ln x - \\ln y$",
+                modelSolution: "Let a = ln x → x = eᵃ, b = ln y → y = eᵇ.\nx/y = eᵃ/eᵇ = eᵃ⁻ᵇ.\nTake ln: ln(x/y) = a − b = ln x − ln y. □"
+            }
+        ]
     }
 };
 
@@ -2234,7 +2654,7 @@ function loadStateFromStorage() {
         if (storedAnswers) userAnswers = JSON.parse(storedAnswers);
         if (storedActiveRoom && examDatabase[storedActiveRoom]) activeRoomKey = storedActiveRoom;
         if (storedTheme) currentTheme = storedTheme;
-        if (storedTranslations) translatedQuestions = JSON.parse(storedTranslations);
+        // translatedQuestions intentionally NOT restored — always start closed
     } catch (e) {
         console.error("Error loading state:", e);
     }
@@ -2298,10 +2718,10 @@ function applyThemeOnLoad() {
     const toggleBtn = document.getElementById("theme-btn");
     if (currentTheme === "light") {
         bodyEl.classList.add("light-theme");
-        toggleBtn.innerText = "Dark";
+        toggleBtn.innerText = "🌙 Dark";
     } else {
         bodyEl.classList.remove("light-theme");
-        toggleBtn.innerText = "Light";
+        toggleBtn.innerText = "☀️ Light";
     }
 }
 
@@ -2341,6 +2761,27 @@ function lineToTeX(line) {
     return s;
 }
 
+// Renders Arabic translation question text as a single inline paragraph (no line breaks)
+function renderArabicInlineText(raw) {
+    if (!raw) return '';
+    const arabicRe = /[\u0600-\u06FF]/;
+    // Replace \n with space, treat as single line
+    const line = raw.replace(/\n/g, ' ').trim();
+    // Split by $...$ math segments
+    const parts = line.split(/(\$[^$]+\$)/g);
+    const html = parts.map(p => {
+        if (!p) return '';
+        if (p.startsWith('$') && p.endsWith('$')) {
+            // inline math
+            const inner = p.slice(1, -1);
+            return `\\(${inner}\\)`;
+        }
+        if (arabicRe.test(p)) return `<span dir="rtl">${escapeHTML(p)}</span>`;
+        return escapeHTML(p);
+    }).join('');
+    return `<span class="q-text-wrap" dir="rtl" style="display:block;text-align:right;line-height:2">${html}</span>`;
+}
+
 function renderSolutionHTML(raw) {
     if (!raw) return '';
     const lines = [];
@@ -2353,6 +2794,36 @@ function renderSolutionHTML(raw) {
         ? '<div class="h-1"></div>'
         : '<div class="sol-line">\\(\\displaystyle ' + lineToTeX(l) + '\\)</div>'
     ).join('');
+}
+
+function renderArabicHTML(raw) {
+    // Smart renderer: Arabic-heavy lines → plain RTL text, math-heavy lines → LaTeX
+    if (!raw) return '';
+    const arabicRe = /[\u0600-\u06FF]/;
+    const lines = [];
+    raw.split('\n').forEach(l => {
+        const t = l.trim();
+        if (!t) { lines.push(''); return; }
+        t.split(/(?<=[.✓✗∎])\s+/).forEach(seg => { if (seg.trim()) lines.push(seg.trim()); });
+    });
+    return lines.map(l => {
+        if (l === '') return '<div class="h-1"></div>';
+        const arabicChars = (l.match(/[\u0600-\u06FF]/g) || []).length;
+        const totalChars = l.replace(/\s/g, '').length;
+        const arabicRatio = totalChars > 0 ? arabicChars / totalChars : 0;
+        if (arabicRatio > 0.3) {
+            // Mixed or Arabic-dominant: split Arabic text from math inline
+            const parts = l.split(/(\$[^$]+\$|[a-zA-Z0-9\^\{\}\(\)\/\+\-\=\*\.\'\_]+(?:\([^)]*\))*[a-zA-Z0-9\^\{\}\(\)\/\+\-\=\*\.\'\_]*)/g);
+            const html = parts.map(p => {
+                if (!p) return '';
+                if (arabicRe.test(p)) return `<span dir="rtl">${escapeHTML(p)}</span>`;
+                if (isMathSegment(p) || /[\^\_\(\)\/]/.test(p)) return `\\(${lineToTeX(p)}\\)`;
+                return escapeHTML(p);
+            }).join('');
+            return `<div class="sol-line" dir="rtl" style="text-align:right">${html}</div>`;
+        }
+        return `<div class="sol-line">\\(\\displaystyle ${lineToTeX(l)}\\)</div>`;
+    }).join('');
 }
 
 function escapeHTML(text) {
@@ -2397,7 +2868,7 @@ function toggleTranslation(qId) {
         // Hide translation
         delete translatedQuestions[key];
         translationBox.classList.add('hidden');
-        translateBtn.innerHTML = '<span class="text-sm">ترجم للعربية</span>';
+        translateBtn.innerHTML = '<span class="text-sm">الاجابات النموذجية</span>';
         translateBtn.classList.remove('bg-green-600');
         translateBtn.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-purple-600');
     } else {
@@ -2419,7 +2890,7 @@ function toggleTranslation(qId) {
                         <span class="text-lg">🇸🇦</span>
                         <span class="text-sm font-bold text-blue-400">الترجمة العربية</span>
                     </div>
-                    <p class="text-sm font-semibold text-main mb-3">${renderTranslationLine(trans.text)}</p>
+                    <div class="sol-content text-sm font-semibold text-main mb-3">${renderArabicInlineText(trans.text)}</div>
             `;
             
             if (trans.options) {
@@ -2428,7 +2899,7 @@ function toggleTranslation(qId) {
                     const match = opt.match(/^([^\)]+\))\s*(.*)$/);
                     const label = match ? match[1].trim() : '';
                     const content = match ? match[2].trim() : opt;
-                    translationHTML += `<div class="option-wrapper flex items-center gap-3 border p-3 rounded-xl text-sm text-muted pr-4"><span class="font-semibold">${escapeHTML(label)}</span> ${renderTranslationLine(content)}</div>`;
+                    translationHTML += `<div class="option-wrapper flex items-start gap-3 border p-3 rounded-xl text-sm text-muted pr-4"><span class="font-semibold shrink-0">${escapeHTML(label)}</span><div class="sol-content">${renderArabicHTML(content)}</div></div>`;
                 });
                 translationHTML += `</div>`;
             }
@@ -2436,8 +2907,8 @@ function toggleTranslation(qId) {
             if (trans.explain) {
                 translationHTML += `
                     <div class="detailed-explain rounded-lg p-3 mt-3">
-                        <p class="text-xs font-bold text-emerald-400 mb-2">الشرح التفصيلي:</p>
-                        <div class="text-sm text-slate-200 leading-relaxed">${renderTranslationText(trans.explain)}</div>
+                        <p class="text-xs font-bold text-emerald-400 mb-2">الاجابات النموذجية:</p>
+                        <div class="sol-content text-sm text-slate-200">${renderArabicHTML(trans.explain)}</div>
                     </div>
                 `;
             }
@@ -2457,7 +2928,7 @@ function toggleTranslation(qId) {
         }
         
         translationBox.classList.remove('hidden');
-        translateBtn.innerHTML = '<span class="text-sm">اخفاء الترجمة</span>';
+        translateBtn.innerHTML = '<span class="text-sm">اخفاء الاجابة</span>';
         translateBtn.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-purple-600');
         translateBtn.classList.add('bg-green-600');
     }
@@ -2465,6 +2936,42 @@ function toggleTranslation(qId) {
     saveStateToStorage();
     
     typesetMath([translationBox]);
+}
+
+// ===================== MODEL ANSWER TOGGLE (SUBJECTIVE) =====================
+function toggleModelAnswer(qId) {
+    const box = document.getElementById(`model-box-${qId}`);
+    const btn = document.getElementById(`model-btn-${qId}`);
+    if (!box || !btn) return;
+
+    const isHidden = box.classList.contains('hidden');
+
+    if (isHidden) {
+        // Find the question
+        const roomQuestions = examDatabase[activeRoomKey] ? examDatabase[activeRoomKey].questions : [];
+        const qObj = roomQuestions.find(q => q.id === qId);
+        if (!qObj || !qObj.modelSolution) return;
+
+        box.innerHTML = `
+            <div class="detailed-explain rounded-xl p-4 mt-3 arabic-text" dir="ltr">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-lg">✅</span>
+                    <span class="text-sm font-bold text-emerald-400">Model Answer</span>
+                </div>
+                <div class="sol-content code-font text-sm text-slate-200 whitespace-pre-line leading-relaxed">${renderSolutionHTML(qObj.modelSolution)}</div>
+            </div>
+        `;
+        box.classList.remove('hidden');
+        btn.querySelector('span').textContent = 'إخفاء الإجابة';
+        btn.classList.remove('from-blue-500', 'to-purple-600');
+        btn.classList.add('bg-emerald-600');
+        typesetMath([box]);
+    } else {
+        box.classList.add('hidden');
+        btn.querySelector('span').textContent = 'الإجابة النموذجية';
+        btn.classList.remove('bg-emerald-600');
+        btn.classList.add('from-blue-500', 'to-purple-600');
+    }
 }
 
 // ===================== RENDER FUNCTIONS =====================
@@ -2492,17 +2999,26 @@ function renderQuestions(questions) {
         card.className = "card-bg border rounded-2xl p-5 space-y-3";
         card.id = `card-${q.id}`;
 
+        const isSubjective = q.type === "subjective";
+        const btnLabel = isSubjective ? "الإجابة النموذجية" : "الاجابات النموذجية";
+        const btnOnclick = isSubjective
+            ? `toggleModelAnswer('${q.id}')`
+            : `toggleTranslation('${q.id}')`;
+        const btnId = isSubjective ? `model-btn-${q.id}` : `translate-btn-${q.id}`;
+        const boxId = isSubjective ? `model-box-${q.id}` : `translation-${q.id}`;
+
         let html = `
             <div class="flex items-start justify-between gap-2 flex-wrap">
                 <p class="text-base font-semibold text-main leading-relaxed flex-1">${q.text}</p>
-                <div class="flex items-center gap-2">
-                    <button type="button" id="translate-btn-${q.id}" onclick="toggleTranslation('${q.id}')" class="translate-btn text-white font-bold text-xs px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5">
-                        <span class="text-sm">ترجم للعربية</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" id="${btnId}" onclick="${btnOnclick}" class="translate-btn text-white font-bold text-xs px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5">
+                        <span class="text-sm">${btnLabel}</span>
                     </button>
                     <span id="status-${q.id}" class="text-xs shrink-0"></span>
                 </div>
             </div>
-            <div id="translation-${q.id}" class="hidden"></div>
+            <div id="${boxId}" class="hidden"></div>
+            ${!isSubjective ? `<div id="translation-${q.id}" class="hidden"></div>` : ''}
         `;
 
         if (q.type === "mcq") {
@@ -2527,9 +3043,6 @@ function renderQuestions(questions) {
                         </div>
                         <div class="sol-content text-sm text-slate-200">${renderSolutionHTML(q.explain)}</div>
                     </div>
-                    <button type="button" id="explain-btn-${q.id}" onclick="toggleExplanation('${q.id}')" class="text-[11px] text-blue-400 hover:text-blue-300 font-semibold transition-colors cursor-pointer hidden">
-                        Show Detailed Explanation
-                    </button>
                 `;
             }
         } else if (q.type === "tf") {
@@ -2556,9 +3069,6 @@ function renderQuestions(questions) {
                         </div>
                         <div class="sol-content text-sm text-slate-200">${renderSolutionHTML(q.explain)}</div>
                     </div>
-                    <button type="button" id="explain-btn-${q.id}" onclick="toggleExplanation('${q.id}')" class="text-[11px] text-blue-400 hover:text-blue-300 font-semibold transition-colors cursor-pointer hidden">
-                        Show Detailed Explanation
-                    </button>
                 `;
             }
         } else if (q.type === "subjective") {
@@ -2569,30 +3079,12 @@ function renderQuestions(questions) {
                     placeholder="Write your solution here..."
                     oninput="saveAnswer('${q.id}', this.value)">${savedWork.replace(/</g, "&lt;")}</textarea>
             `;
-            if (q.modelSolution) {
-                html += `
-                    <div class="solution-box border rounded-xl p-4 hidden" id="explain-${q.id}">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-emerald-400 font-bold text-sm">Model Solution</span>
-                        </div>
-                        <div class="sol-content code-font text-sm text-slate-200 whitespace-pre-line leading-relaxed">${renderSolutionHTML(q.modelSolution)}</div>
-                    </div>
-                    <button type="button" id="explain-btn-${q.id}" data-show-label="Show Model Solution" data-hide-label="Hide Model Solution" onclick="toggleExplanation('${q.id}')" class="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold transition-colors cursor-pointer">
-                        Show Model Solution
-                    </button>
-                `;
-            }
         }
         
         card.innerHTML = html;
         form.appendChild(card);
         
-        // Restore translation state
-        const key = `${activeRoomKey}_${q.id}`;
-        if (translatedQuestions[key]) {
-            translatedQuestions[key] = false;
-            setTimeout(() => toggleTranslation(q.id), 100);
-        }
+
     });
 
     typesetMath([form]);
@@ -2643,7 +3135,6 @@ function applyVisualCorrectionFeedback() {
     questions.forEach(q => {
         const statusEl = document.getElementById(`status-${q.id}`);
         const savedAns = userAnswers[activeRoomKey][q.id];
-        const explainBtn = document.getElementById(`explain-btn-${q.id}`);
         const explainBox = document.getElementById(`explain-${q.id}`);
         
         if (q.type === "mcq") {
@@ -2662,8 +3153,8 @@ function applyVisualCorrectionFeedback() {
                 }
             }
             
-            // Show explanation button and box
-            if (explainBtn) explainBtn.classList.remove("hidden");
+            // Show explanation box
+
             if (explainBox) explainBox.classList.remove("hidden");
             
             if (savedAns !== undefined) {
@@ -2695,8 +3186,8 @@ function applyVisualCorrectionFeedback() {
                 }
             }
             
-            // Show explanation button and box
-            if (explainBtn) explainBtn.classList.remove("hidden");
+            // Show explanation box
+
             if (explainBox) explainBox.classList.remove("hidden");
             
             if (savedAns !== undefined) {
@@ -2770,13 +3261,18 @@ function updateNavbarBadgeStatus(roomKey) {
             badge.className = "text-[9px] px-1.5 py-0.5 rounded border font-bold badge-done";
         }
     } else {
-        badge.innerText = "IDLE";
-        badge.className = "tab-badge-idle text-[9px] px-1.5 py-0.5 rounded border font-bold";
+        if (roomKey === activeRoomKey) {
+            badge.innerText = "ACTIVE";
+            badge.className = "text-[9px] px-1.5 py-0.5 rounded border font-bold bg-indigo-500/20 border-indigo-500/60 text-indigo-300 badge-active";
+        } else {
+            badge.innerText = "IDLE";
+            badge.className = "tab-badge-idle text-[9px] px-1.5 py-0.5 rounded border font-bold";
+        }
     }
     const tabBtn = document.getElementById(`tab-${roomKey}`);
     if (tabBtn) {
         if (roomKey === activeRoomKey) {
-            tabBtn.className = "bg-indigo-600/20 border-indigo-500 text-indigo-400 shrink-0 px-4 py-2 rounded-xl text-xs font-bold tracking-tight transition-all cursor-pointer flex items-center gap-2 border";
+            tabBtn.className = "bg-indigo-600/20 border-indigo-500 text-indigo-400 shrink-0 px-4 py-2 rounded-xl text-xs font-bold tracking-tight transition-all cursor-pointer flex items-center gap-2 border tab-active";
         } else {
             tabBtn.className = "tab-idle shrink-0 px-4 py-2 rounded-xl text-xs font-bold tracking-tight transition-all cursor-pointer flex items-center gap-2 border";
         }
@@ -2807,9 +3303,11 @@ function initializePlatform() {
         { key: "room_2025", label: "2025 Final" },
         { key: "room_2024", label: "2024 Final" },
         { key: "room_2023", label: "2023 Final" },
-        { key: "room_summer22", label: "2022 Summer" },
+        { key: "room_2022", label: "2022 Final" },
         { key: "room_2021_final", label: "2021 Final" },
-        { key: "room_2021_summer", label: "2021 Summer" }
+        { key: "room_2020", label: "2020 Final" },
+        { key: "room_summer22", label: "S22 Summer" },
+        { key: "room_2021_summer", label: "S21 Summer" }
     ];
     
     sortedRooms.forEach(room => {
@@ -2836,6 +3334,8 @@ function initializePlatform() {
 }
 
 window.onload = initializePlatform;
+
+
 </script>
 
     <footer class="nav-bg border-t border-slate-800/40 mt-16 py-12 px-6 transition-all duration-300 relative overflow-hidden">
@@ -2844,7 +3344,7 @@ window.onload = initializePlatform;
             <div class="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/30 px-4 py-1.5 rounded-xl shadow-lg">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-[10px] md:text-xs font-bold text-indigo-400 uppercase tracking-[0.2em] code-font">Minia University - Faculty of Science</span>
-            </div>-
+            </div>
             <div class="space-y-3">
                 <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400 font-extrabold opacity-80">Made With Passion By</p>
                 <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 pt-2">
